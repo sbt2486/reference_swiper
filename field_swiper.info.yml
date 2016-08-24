@@ -1,0 +1,5 @@
+type: module
+name: Swiper field formatter
+description: Formats multi value fields as swiper galleries.
+core: 8.x
+
