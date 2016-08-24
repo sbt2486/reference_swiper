@@ -1,5 +1,5 @@
 <?php
-namespace Drupal\field_swiper\Controller;
+namespace Drupal\field_swiper;
 
 use Drupal\Core\Config\Entity\ConfigEntityListBuilder;
 use Drupal\Core\Entity\EntityInterface;
