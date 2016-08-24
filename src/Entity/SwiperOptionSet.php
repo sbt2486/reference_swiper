@@ -63,14 +63,14 @@ class SwiperOptionSet extends ConfigEntityBase implements SwiperOptionSetInterfa
   /**
    * {@inheritdoc}
    */
-  public function getOptionSet() {
+  public function getParameters() {
     return $this->parameters;
   }
 
   /**
    * {@inheritdoc}
    */
-  public function setOptionSet(array $values) {
+  public function setParameters(array $values) {
     foreach ($values as $parameter => $value) {
       $this->parameters[$parameter] = $value;
     }

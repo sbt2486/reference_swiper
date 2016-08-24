@@ -10,22 +10,23 @@ use Drupal\Core\Config\Entity\ConfigEntityInterface;
 interface SwiperOptionSetInterface extends ConfigEntityInterface {
 
   /**
-   * Returns the value of the option set configuration.
+   * Returns the Swiper parameters of the option set.
    *
    * @return array
    *   Option set parameters as used by the Swiper library.
    */
-  public function getOptionSet();
+  public function getParameters();
 
   /**
-   * Sets the option set to the given value.
+   * Sets the Swiper parameters on the option set.
    *
    * @param array $values
-   *   The option set's values that will be set on the entity.
+   *   The option set's values that will be set on the entity, keyed by
+   *   parameter id.
    *
    * @return \Drupal\field_swiper\SwiperOptionSetInterface
    *   The swiper option set config entity.
    */
-  public function setOptionSet(array $values);
+  public function setParameters(array $values);
 
 }

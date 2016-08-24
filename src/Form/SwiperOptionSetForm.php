@@ -31,7 +31,7 @@ class SwiperOptionSetForm extends EntityForm {
    */
   public function form(array $form, FormStateInterface $form_state) {
     $form = parent::form($form, $form_state);
-
+    /** @var \Drupal\field_swiper\SwiperOptionSetInterface */
     $swiper_option_set = $this->entity;
 
     $form['label'] = [
@@ -580,8 +580,9 @@ class SwiperOptionSetForm extends EntityForm {
     $options = $this->getSwiperDefaults();
     foreach (array_keys($options) as $key) {
       $title = ucfirst(strtolower(preg_replace('/([A-Z])/', ' $1', $key)));
+      $default = !empty($swiper_option_set->getParameters()[$key]) ? $swiper_option_set->getParameters()[$key] : $options[$key];
       $form['parameters'][$key]['#title'] = $title;
-      $form['parameters'][$key]['#default_value'] = (!isset($current) || is_null($current)) ? $options[$key] : $current;
+      $form['parameters'][$key]['#default_value'] = $default;
     }
 
     return $form;
@@ -591,16 +592,17 @@ class SwiperOptionSetForm extends EntityForm {
    * {@inheritdoc}
    */
   public function save(array $form, FormStateInterface $form_state) {
+    /** @var \Drupal\field_swiper\SwiperOptionSetInterface */
     $swiper_option_set = $this->entity;
     $status = $swiper_option_set->save();
 
     if ($status) {
-      drupal_set_message($this->t('Saved the %label Example.', array(
+      drupal_set_message($this->t('Saved the %label Swiper option set.', array(
         '%label' => $swiper_option_set->label(),
       )));
     }
     else {
-      drupal_set_message($this->t('The %label Example was not saved.', array(
+      drupal_set_message($this->t('The %label Swiper option set was not saved.', array(
         '%label' => $swiper_option_set->label(),
       )));
     }
@@ -615,11 +617,14 @@ class SwiperOptionSetForm extends EntityForm {
     return (bool) $entity;
   }
 
-
   /**
-   * @todo
+   * Provides the Swiper library's parameter default values.
+   *
+   * @return array
+   *   Array of default parameter values, indexed by parameter id.
    */
   protected function getSwiperDefaults() {
+    // @todo make this configurable using simple config.
     return [
       'initialSlide' => 0,
       'direction' => 'horizontal',
