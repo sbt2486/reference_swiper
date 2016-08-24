@@ -74,7 +74,7 @@ field_swiper.swiper_option_set.*:
           type: integer
           label: 'freeModeMomentumBounceRatio'
         freeModeMinimumVelocity:
-          type: integer
+          type: float
           label: 'freeModeMinimumVelocity'
         freeModeSticky:
           type: boolean
@@ -82,18 +82,18 @@ field_swiper.swiper_option_set.*:
         effect:
           type: string
           label: 'effect'
-        fade:
-          type: string
-          label: 'fade'
-        cube:
-          type: string
-          label: 'cube'
-        coverflow:
-          type: string
-          label: 'coverflow'
-        flip:
-          type: string
-          label: 'flip'
+#        fade:
+#          type: string
+#          label: 'fade'
+#        cube:
+#          type: string
+#          label: 'cube'
+#        coverflow:
+#          type: string
+#          label: 'coverflow'
+#        flip:
+#          type: string
+#          label: 'flip'
         parallax:
           type: boolean
           label: 'parallax'
@@ -143,7 +143,7 @@ field_swiper.swiper_option_set.*:
           type: boolean
           label: 'longSwipes'
         longSwipesRatio:
-          type: integer
+          type: float
           label: 'longSwipesRatio'
         longSwipesMs:
           type: integer
@@ -170,7 +170,7 @@ field_swiper.swiper_option_set.*:
           type: boolean
           label: 'resistance'
         resistanceRatio:
-          type: integer
+          type: float
           label: 'resistanceRatio'
         preventClicks:
           type: boolean
