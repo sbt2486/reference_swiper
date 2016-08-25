@@ -159,6 +159,7 @@ class SwiperFormatter extends EntityReferenceEntityFormatter implements Containe
     // If there's more than one reference to display, add the Swiper library
     // and some markup for the Swiper.
     if ($items->count() > 1) {
+      /** @var \Drupal\field_swiper\Entity\SwiperOptionSet $swiper_option_set */
       $swiper_option_set = SwiperOptionSet::load(
         $this->getSetting('swiper_option_set')
       );
@@ -169,15 +170,18 @@ class SwiperFormatter extends EntityReferenceEntityFormatter implements Containe
       // times on a page in different view modes with different Swiper options.
       $parameter_key = $this->fieldDefinition->id() . '.' . $this->viewMode;
 
+      // Swiper JS requires this class.
       $elements['#attributes']['class'] = 'swiper-wrapper';
-//      foreach (Element::children($elements) as $delta => $element) {
-//        $test = 1;
-//      }
 
-      // @todo convert this into a template with preprocessing
-      // @todo check and add elements for pagination, prev next buttons etc. if enabled.
+      // This will render the required markup and add the library.
       $elements = [
-        '#type' => 'container',
+        '#theme' => 'swiper_container',
+        '#children' => $elements,
+        '#swiper_parameters' => $swiper_option_set->getParameters(),
+        '#attributes' => [
+          'class' => ['swiper-container'],
+          'data-swiper-param-key' => $parameter_key,
+        ],
         '#attached' => [
           'library' => ['field_swiper/field_swiper.swiper'],
           'drupalSettings' => [
@@ -188,11 +192,6 @@ class SwiperFormatter extends EntityReferenceEntityFormatter implements Containe
             ],
           ],
         ],
-        '#attributes' => [
-          'class' => ['swiper-container'],
-          'data-swiper-param-key' => $parameter_key,
-        ],
-        'elements' => $elements,
       ];
     }
 

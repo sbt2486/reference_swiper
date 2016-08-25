@@ -7,6 +7,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Entity\Query\QueryFactory;
 use Drupal\Core\Form\FormStateInterface;
 
+// @todo create sections using details elements according to http://idangero.us/swiper/api
 class SwiperOptionSetForm extends EntityForm {
 
   /**
@@ -624,7 +625,7 @@ class SwiperOptionSetForm extends EntityForm {
    *   Array of default parameter values, indexed by parameter id.
    */
   protected function getSwiperDefaults() {
-    // @todo make this configurable using simple config.
+    // @todo make defaults configurable using simple config.
     return [
       'initialSlide' => 0,
       'direction' => 'horizontal',

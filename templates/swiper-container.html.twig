@@ -1,0 +1,41 @@
+{#
+/**
+ * @file
+ * Default theme implementation of a field swiper container.
+ *
+ * Available variables:
+ * - attributes: HTML attributes for the containing element.
+ * - children: The rendered child elements of the container.
+ * - has_parent: A flag to indicate that the container has one or more parent
+ *   containers.
+ * - pager: Indicates whether or not to render an element for pagination.
+ * - next_button: Indicates whether or not to render the 'next' button.
+ * - prev_button: Indicates whether or not to render the 'previous' button.
+ * - scrollbar: Indicates whether or not to render the a swiper scrollbar.
+ *
+ * @see template_preprocess_swiper_container()
+ *
+ * @ingroup themeable
+ */
+#}
+{%
+  set classes = [
+    has_parent ? 'js-form-wrapper',
+    has_parent ? 'form-wrapper',
+  ]
+%}
+<div{{ attributes.addClass(classes) }}>
+  {{ children }}
+  {% if pager %}
+    <div class="swiper-pagination"></div>
+  {% endif %}
+  {% if prev_button %}
+    <div class="swiper-button-prev"></div>
+  {% endif %}
+  {% if next_button %}
+    <div class="swiper-button-next"></div>
+  {% endif %}
+  {% if scrollbar %}
+    <div class="swiper-scrollbar"></div>
+  {% endif %}
+</div>

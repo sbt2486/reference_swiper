@@ -17,14 +17,10 @@
       $('.swiper-container').once('field-swiper').each(function (index) {
         var parameterKey = $(this).data('swiper-param-key');
         console.log(drupalSettings.fieldSwiper.parameters[parameterKey]);
-        drupalSettings.fieldSwiper.parameters[parameterKey]['pagination'] = null;
+        drupalSettings.fieldSwiper.parameters[parameterKey]['paginationType'] = 'bullets';
         swiperInstances[index] = new Swiper(
           $(this)[0],
-          //drupalSettings.fieldSwiper.parameters[parameterKey]
-          {
-            speed: 400,
-            spaceBetween: 100
-          }
+          drupalSettings.fieldSwiper.parameters[parameterKey]
         );
       });
     }
