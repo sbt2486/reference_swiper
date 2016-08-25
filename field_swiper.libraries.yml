@@ -1,0 +1,20 @@
+field_swiper.swiper:
+  remote: https://github.com/nolimits4web/Swiper
+  license:
+      name: MIT
+      url: https://github.com/nolimits4web/Swiper/blob/master/LICENSE
+  js:
+    /libraries/swiper/dist/js/swiper.jquery.min.js: {}
+    js/field_swiper.js: {}
+  css:
+    theme:
+      /libraries/swiper/dist/css/swiper.min.css: {}
+  dependencies:
+    - core/jquery
+    #- core/drupal
+    - core/drupalSettings
+    #- core/drupal.debounce
+    - core/jquery.once
+    #- editor/drupal.editor
+    # Ensure to run after core/matchmedia.
+    #- core/matchmedia
