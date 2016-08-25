@@ -2,24 +2,42 @@
 
 namespace Drupal\field_swiper\Plugin\Field\FieldFormatter;
 
+use Drupal\Core\Entity\EntityDisplayRepositoryInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldItemListInterface;
+use Drupal\Core\Field\FormatterBase;
 use Drupal\Core\Field\Plugin\Field\FieldFormatter\EntityReferenceEntityFormatter;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Logger\LoggerChannelFactoryInterface;
+use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+use Drupal\Core\Render\Element;
+use Drupal\Core\Routing\UrlGeneratorInterface;
+use Drupal\field_swiper\Entity\SwiperOptionSet;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Plugin implementation of the 'better entity reference' field formatter.
+ * Plugin implementation of the 'Swiper' field formatter.
  *
  * @FieldFormatter(
- *   id = "better_entity_reference_view",
- *   label = @Translation("Advanced Rendered Entity"),
- *   description = @Translation("Display a configured set of referenced entities using entity_view()."),
+ *   id = "swiper_formatter",
+ *   label = @Translation("Swiper Field"),
+ *   description = @Translation("Displays multi value field contents as Swiper slider."),
  *   field_types = {
- *     "entity_reference"
+ *     "entity_reference",
+ *     "image",
+ *     "file",
  *   }
  * )
  */
-class SwiperFormatter extends EntityReferenceEntityFormatter {
+class SwiperFormatter extends EntityReferenceEntityFormatter implements ContainerFactoryPluginInterface {
+
+  /**
+   * The url generator service.
+   *
+   * @var \Drupal\Core\Routing\UrlGeneratorInterface
+   */
+  protected $urlGenerator;
 
   /**
    * {@inheritdoc}
@@ -35,8 +53,43 @@ class SwiperFormatter extends EntityReferenceEntityFormatter {
       $configuration['third_party_settings'],
       $container->get('logger.factory'),
       $container->get('entity_type.manager'),
-      $container->get('entity_display.repository')
+      $container->get('entity_display.repository'),
+      $container->get('url_generator')
     );
+  }
+
+  /**
+   * Constructs a new SwiperFormatter.
+   *
+   * @param string $plugin_id
+   *   The plugin_id for the formatter.
+   * @param mixed $plugin_definition
+   *   The plugin implementation definition.
+   * @param \Drupal\Core\Field\FieldDefinitionInterface $field_definition
+   *   The definition of the field to which the formatter is associated.
+   * @param array $settings
+   *   The formatter settings.
+   * @param string $label
+   *   The formatter label display setting.
+   * @param string $view_mode
+   *   The view mode.
+   * @param array $third_party_settings
+   *   Any third party settings settings.
+   * @param LoggerChannelFactoryInterface $logger_factory
+   *   The logger factory.
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
+   *   The entity type manager.
+   * @param \Drupal\Core\Entity\EntityDisplayRepositoryInterface $entity_display_repository
+   *   The entity display repository.
+   * @param \Drupal\Core\Routing\UrlGeneratorInterface $url_generator
+   *   The url generator service.
+   */
+  public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, $label, $view_mode, array $third_party_settings, LoggerChannelFactoryInterface $logger_factory, EntityTypeManagerInterface $entity_type_manager, EntityDisplayRepositoryInterface $entity_display_repository, UrlGeneratorInterface $url_generator) {
+    parent::__construct($plugin_id, $plugin_definition, $field_definition, $settings, $label, $view_mode, $third_party_settings, $logger_factory, $entity_type_manager, $entity_display_repository);
+    $this->loggerFactory = $logger_factory;
+    $this->entityTypeManager = $entity_type_manager;
+    $this->entityDisplayRepository = $entity_display_repository;
+    $this->urlGenerator = $url_generator;
   }
 
   /**
@@ -44,10 +97,7 @@ class SwiperFormatter extends EntityReferenceEntityFormatter {
    */
   public static function defaultSettings() {
     return array(
-      'selection_mode' => 'all',
-      'amount' => 1,
-      'offset' => 0,
-      'reverse' => FALSE,
+      'swiper_option_set' => NULL,
     ) + parent::defaultSettings();
   }
 
@@ -55,49 +105,27 @@ class SwiperFormatter extends EntityReferenceEntityFormatter {
    * {@inheritdoc}
    */
   public function settingsForm(array $form, FormStateInterface $form_state) {
-    $elements = parent::settingsForm($form, $form_state);
+    $form = parent::settingsForm($form, $form_state);
 
-    $elements['selection_mode'] = [
-      '#type' => 'select',
-      '#options' => $this->getSelectionModes(),
-      '#title' => t('Selection mode'),
-      '#default_value' => $this->getSetting('selection_mode'),
-      '#required' => TRUE,
-    ];
+    // Check whether any option sets are available.
+    if (SwiperOptionSet::loadMultiple()) {
+      $form['swiper_option_set'] = array(
+        '#type' => 'entity_autocomplete',
+        '#title' => t('Swiper option set'),
+        '#target_type' => 'swiper_option_set',
+        '#default_value' => SwiperOptionSet::load($this->getSetting('swiper_option_set')),
+        // Validation is done in static::validateConfigurationForm().
+        '#validate_reference' => FALSE,
+        '#size' => '60',
+        '#maxlength' => '60',
+        '#description' => t('Select the Swiper option set you would like to use for this field'),
+      );
+    }
+    else {
+      $form['no_sets_info'] = $this->getNoOptionSetsAvailableInfo();
+    }
 
-    $show_advanced = [
-      'visible' => [
-        ':input[name="fields[field_images][settings_edit_form][settings][selection_mode]"]' => ['value' => 'advanced'],
-      ],
-    ];
-
-    $elements['amount'] = [
-      '#type' => 'number',
-      '#step' => 1,
-      '#min' => 1,
-      '#title' => t('Amount of displayed entities'),
-      '#default_value' => $this->getSetting('amount'),
-      '#states' => $show_advanced,
-    ];
-
-    $elements['offset'] = [
-      '#type' => 'number',
-      '#step' => 1,
-      '#min' => 0,
-      '#title' => t('Offset'),
-      '#default_value' => $this->getSetting('offset'),
-      '#states' => $show_advanced,
-    ];
-
-    $elements['reverse'] = [
-      '#type' => 'checkbox',
-      '#title' => t('Reverse order'),
-      '#desctiption' => t('Check this if you want to show the last added entities of the field. For example use amount 2 and "Reverse order" in order to display the last two entities in the field.'),
-      '#default_value' => $this->getSetting('reverse'),
-      '#states' => $show_advanced,
-    ];
-
-    return $elements;
+    return $form;
   }
 
   /**
@@ -106,21 +134,15 @@ class SwiperFormatter extends EntityReferenceEntityFormatter {
   public function settingsSummary() {
     $summary = parent::settingsSummary();
 
-    $summary[] = t(
-      'Selection mode: @mode',
-      ['@mode' => $this->getSelectionModes()[$this->getSetting('selection_mode')]]
+    // Check whether any option sets are available.
+    if (SwiperOptionSet::loadMultiple()) {
+      $summary[] = t(
+      'Swiper option set: @option_set',
+      ['@option_set' => SwiperOptionSet::load($this->getSetting('swiper_option_set'))->label()]
     );
-    if ($this->getSetting('selection_mode') == 'advanced') {
-      $amount = $this->getSetting('amount') ? $this->getSetting('amount') : 1;
-      $summary[] = \Drupal::translation()->formatPlural(
-        $amount,
-        $this->getSetting('reverse') ? 'Showing @amount entity starting at @offset in reverse order' : 'Showing @amount entity starting at @offset',
-        $this->getSetting('reverse') ? 'Showing @amount entities starting at @offset in reverse order': 'Showing @amount entities starting at @offset',
-        [
-          '@amount' => $amount,
-          '@offset' => $this->getSetting('offset') ? $this->getSetting('offset') : 0,
-        ]
-      );
+    }
+    else {
+      $summary[] = $this->getNoOptionSetsAvailableInfo();
     }
 
     return $summary;
@@ -128,136 +150,78 @@ class SwiperFormatter extends EntityReferenceEntityFormatter {
 
   /**
    * {@inheritdoc}
+   *
+   * @see ::prepareView()
+   * @see ::getEntitiestoView()
+   */
+  public function view(FieldItemListInterface $items, $langcode = NULL) {
+    $elements = parent::view($items, $langcode);
+    // If there's more than one reference to display, add the Swiper library
+    // and some markup for the Swiper.
+    if ($items->count() > 1) {
+      $swiper_option_set = SwiperOptionSet::load(
+        $this->getSetting('swiper_option_set')
+      );
+
+      // Create a key that allows fetching the view mode and field specific
+      // option set in JS. This is necessary in order to support different
+      // Swiper option sets for the same node that might be displayed multiple
+      // times on a page in different view modes with different Swiper options.
+      $parameter_key = $this->fieldDefinition->id() . '.' . $this->viewMode;
+
+      $elements['#attributes']['class'] = 'swiper-wrapper';
+//      foreach (Element::children($elements) as $delta => $element) {
+//        $test = 1;
+//      }
+
+      // @todo convert this into a template with preprocessing
+      // @todo check and add elements for pagination, prev next buttons etc. if enabled.
+      $elements = [
+        '#type' => 'container',
+        '#attached' => [
+          'library' => ['field_swiper/field_swiper.swiper'],
+          'drupalSettings' => [
+            'fieldSwiper' => [
+              'parameters' => [
+                $parameter_key => $swiper_option_set->getParameters()
+              ]
+            ],
+          ],
+        ],
+        '#attributes' => [
+          'class' => ['swiper-container'],
+          'data-swiper-param-key' => $parameter_key,
+        ],
+        'elements' => $elements,
+      ];
+    }
+
+    return $elements;
+  }
+
+  /**
+   * {@inheritdoc}
    */
   public function viewElements(FieldItemListInterface $items, $langcode) {
-    switch ($this->getSetting('selection_mode')) {
-      case 'advanced':
-        $elements = $this->getAdvancedSelection(
-          $items,
-          $langcode,
-          $this->getSetting('amount'),
-          $this->getSetting('offset')
-        );
-        break;
-
-      case 'first':
-        $elements = $this->getAdvancedSelection(
-          $items,
-          $langcode,
-          1,
-          0
-        );
-        break;
-
-      case 'last':
-        $elements = $this->getAdvancedSelection(
-          $items,
-          $langcode,
-          1,
-          $items->count() - 1
-        );
-        break;
-
-      default;
-        $elements = parent::viewElements($items, $langcode);
-        break;
-
+    foreach ($items as $delta => $item) {
+      $items[$delta]->_attributes += ['class' => ['swiper-slide']];
     }
-
-    return $elements;
+    return parent::viewElements($items, $langcode);
   }
 
   /**
-   * Gets the render array of entities considering formatter's advanced options.
-   *
-   * @param \Drupal\Core\Field\FieldItemListInterface $items
-   *   The field values to be rendered.
-   * @param string $langcode
-   *   The language that should be used to render the field.
+   * Returns a markup element for summary and settings form.
    *
    * @return array
-   *   A renderable array for $items, as an array of child elements keyed by
-   *   consecutive numeric indexes starting from 0.
+   *   Render array of element that indicates that there aren't any option sets.
    */
-  protected function getAdvancedSelection(FieldItemListInterface $items, $langcode, $amount, $offset) {
-    $elements = [];
-    $count = 0;
-    $entities = $this->getEntitiesToView($items, $langcode);
-    if ($this->getSetting('reverse')) {
-      $entities = array_reverse($entities);
-    }
-
-    foreach ($entities as $delta => $entity) {
-
-      // Show entities if offset was reached and amount limit isn't reached yet.
-      if ($delta >= $offset && $count < $amount) {
-        // Due to render caching and delayed calls, the viewElements() method
-        // will be called later in the rendering process through a '#pre_render'
-        // callback, so we need to generate a counter that takes into account
-        // all the relevant information about this field and the referenced
-        // entity that is being rendered.
-        $recursive_render_id = $items->getFieldDefinition()
-            ->getTargetEntityTypeId()
-          . $items->getFieldDefinition()->getTargetBundle()
-          . $items->getName()
-          . $entity->id();
-
-        if (isset(static::$recursiveRenderDepth[$recursive_render_id])) {
-          static::$recursiveRenderDepth[$recursive_render_id]++;
-        }
-        else {
-          static::$recursiveRenderDepth[$recursive_render_id] = 1;
-        }
-
-        // Protect ourselves from recursive rendering.
-        if (static::$recursiveRenderDepth[$recursive_render_id] > static::RECURSIVE_RENDER_LIMIT) {
-          $this->loggerFactory->get('entity')
-            ->error('Recursive rendering detected when rendering entity %entity_type: %entity_id, using the %field_name field on the %bundle_name bundle. Aborting rendering.', [
-              '%entity_type' => $entity->getEntityTypeId(),
-              '%entity_id' => $entity->id(),
-              '%field_name' => $items->getName(),
-              '%bundle_name' => $items->getFieldDefinition()->getTargetBundle(),
-            ]);
-          return $elements;
-        }
-
-        $view_builder = $this->entityTypeManager->getViewBuilder($entity->getEntityTypeId());
-        $elements[$delta] = $view_builder->view(
-          $entity,
-          $this->getSetting('view_mode'),
-          $entity->language()->getId()
-        );
-
-        // Add a resource attribute to set the mapping property's value to the
-        // entity's url. Since we don't know what the markup of the entity will
-        // be, we shouldn't rely on it for structured data such as RDFa.
-        if (!empty($items[$delta]->_attributes) && !$entity->isNew() && $entity->hasLinkTemplate('canonical')) {
-          $items[$delta]->_attributes += array('resource' => $entity->toUrl()->toString());
-        }
-
-        $count++;
-      }
-    }
-
-    if ($this->getSetting('reverse')) {
-      $elements = array_reverse($elements);
-    }
-
-    return $elements;
-  }
-
-  /**
-   * Get the formatters selection mode options.
-   *
-   * @return array
-   *   Array of available selection modes.
-   */
-  protected function getSelectionModes() {
+  protected function getNoOptionSetsAvailableInfo() {
     return [
-      'all' => t('All'),
-      'first' => t('First entity'),
-      'last' => t('Last entity'),
-      'advanced' => t('Advanced'),
+      '#type' => 'item',
+      '#markup' => t(
+        'There are no Swiper options sets available currently. Please create an option set first at <a href="@url" target="_blank">here</a>.',
+        ['@url' => $this->urlGenerator->generateFromRoute('entity.swiper_option_set.collection')]
+      ),
     ];
   }
 
