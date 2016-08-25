@@ -685,13 +685,13 @@ class SwiperOptionSetForm extends EntityForm {
       'noSwipingClass' => 'swiper-no-swiping',
       'swipeHandler' => NULL,
       // Pagination.
-      'pagination' => NULL,
+      'pagination' => '.swiper-pagination',
       'paginationHide' => TRUE,
       'paginationClickable' => FALSE,
       'paginationBulletRender' => NULL,
       // Navigation Buttons.
-      'nextButton' => 'views-slideshow-controls-text-next a',
-      'prevButton' => 'views-slideshow-controls-text-previous a',
+      'nextButton' => '.swiper-button-next',
+      'prevButton' => '.swiper-button-prev',
       // Accessibility.
       'a11y' => FALSE,
       'prevSlideMessage' => 'Previous slide',
@@ -699,7 +699,7 @@ class SwiperOptionSetForm extends EntityForm {
       'firstSlideMessage' => 'This is the first slide',
       'lastSlideMessage' => 'This is the last slide',
       // Scrollbar.
-      'scrollbar' => NULL,
+      'scrollbar' => '.swiper-scrollbar',
       'scrollbarHide' => TRUE,
       // Keyboard / mousewheel.
       'keyboardControl' => FALSE,
