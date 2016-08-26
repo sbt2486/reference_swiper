@@ -40,7 +40,7 @@ class SwiperOptionSetForm extends EntityForm {
       '#title' => $this->t('Label'),
       '#maxlength' => 255,
       '#default_value' => $swiper_option_set->label(),
-      '#description' => $this->t("Label for the Example."),
+      '#description' => $this->t('Label for the Example.'),
       '#required' => TRUE,
     ];
     $form['id'] = [
@@ -377,13 +377,13 @@ class SwiperOptionSetForm extends EntityForm {
     ];
     $form['parameters']['swipeHandler'] = [
       '#type' => 'textfield',
-      '#description' => t('String with CSS selector or HTML element of the container with pagination that will work as only available handler for swiping.'),
+      '#description' => t('String with CSS selector of the container with pagination that will work as only available handler for swiping.'),
     ];
 
     // Pagination.
     $form['parameters']['pagination'] = [
       '#type' => 'textfield',
-      '#description' => t('String with CSS selector or HTML element of the container with pagination.'),
+      '#description' => t('String with CSS selector of the container with pagination.'),
     ];
     $form['parameters']['paginationType'] = [
       '#type' => 'select',
@@ -427,21 +427,29 @@ class SwiperOptionSetForm extends EntityForm {
     // Navigation Buttons.
     $form['parameters']['nextButton'] = [
       '#type' => 'textfield',
-      '#description' => t('String with CSS selector or HTML element of the element that will work like "next" button after click on it.'),
+      '#description' => t('String with CSS selector of the element that will work like "next" button after click on it.'),
     ];
     $form['parameters']['prevButton'] = [
       '#type' => 'textfield',
-      '#description' => t('String with CSS selector or HTML element of the element that will work like "prev" button after click on it.'),
+      '#description' => t('String with CSS selector of the element that will work like "prev" button after click on it.'),
     ];
 
-    // Scollbar
+    // Scollbar.
     $form['parameters']['scrollbar'] = [
       '#type' => 'textfield',
-      '#description' => t('String with CSS selector or HTML element of the container with scrollbar.'),
+      '#description' => t('String with CSS selector of the container with scrollbar.'),
     ];
     $form['parameters']['scrollbarHide'] = [
       '#type' => 'checkbox',
       '#description' => t('Hide scrollbar automatically after user interaction.'),
+    ];
+    $form['parameters']['scrollbarDraggable'] = [
+      '#type' => 'checkbox',
+      '#description' => t('Set to true to enable make scrollbar draggable that allows you to control slider position.'),
+    ];
+    $form['parameters']['scrollbarSnapOnRelease'] = [
+      '#type' => 'checkbox',
+      '#description' => t('Set to true to snap slider position to slides when you release scrollbar.'),
     ];
 
     // Accessibility.
@@ -465,6 +473,10 @@ class SwiperOptionSetForm extends EntityForm {
       '#type' => 'textfield',
       '#description' => t('Message for screen readers for previous button when swiper is on last slide.'),
     ];
+    $form['parameters']['paginationBulletMessage'] = [
+      '#type' => 'textfield',
+      '#description' => t('Message for screen readers for single pagination bullet.'),
+    ];
 
     // Keyboard / Mousewheel
     $form['parameters']['keyboardControl'] = [
@@ -479,12 +491,28 @@ class SwiperOptionSetForm extends EntityForm {
       '#type' => 'checkbox',
       '#description' => t('Set to true to force mousewheel swipes to axis. So in horizontal mode mousewheel will work only with horizontal mousewheel scrolling, and only with vertical scrolling in vertical mode.'),
     ];
+    $form['parameters']['mousewheelReleaseOnEdges'] = [
+      '#type' => 'checkbox',
+      '#description' => t('Set to true and swiper will release mousewheel event and allow page scrolling when swiper is on edge positions (in the beginning or in the end).'),
+    ];
+    $form['parameters']['mousewheelInvert'] = [
+      '#type' => 'checkbox',
+      '#description' => t('Set to true to invert sliding direction.'),
+    ];
+    $form['parameters']['mousewheelSensitivity'] = [
+      '#type' => 'number',
+      '#min' => 1,
+      '#step' => 1,
+      '#description' => t('Multiplier of mousewheel data, allows to tweak mouse wheel sensitivity.'),
+    ];
+
     // Hash Navigation
     $form['parameters']['hashnav'] = [
       '#type' => 'checkbox',
       '#description' => t('Set to true to enable hash url navigation to for slides.'),
     ];
-    // Images
+
+    // Images.
     $form['parameters']['preloadImages'] = [
       '#type' => 'checkbox',
       '#description' => t('When enabled Swiper will force to load all images.'),
@@ -501,10 +529,18 @@ class SwiperOptionSetForm extends EntityForm {
       '#type' => 'checkbox',
       '#description' => t('Set to "true" to enable lazy loading for the closest slides images (for previous and next slide images).'),
     ];
+    $form['parameters']['lazyLoadingInPrevNextAmount'] = [
+      '#type' => 'number',
+      '#min' => !empty($swiper_option_set->getParameters()['slidesPerView']) ? $swiper_option_set->getParameters()['slidesPerView'] : 1,
+      '#step' => 1,
+      '#description' => t("Amount of next/prev slides to preload lazy images in. Can't be less than slidesPerView."),
+    ];
     $form['parameters']['lazyLoadingOnTransitionStart'] = [
       '#type' => 'checkbox',
       '#description' => t('By default, Swiper will load lazy images after transition to this slide, so you may enable this parameter if you need it to start loading of new image in the beginning of transition.'),
     ];
+
+    // Loop.
     $form['parameters']['loop'] = [
       '#type' => 'checkbox',
       '#description' => t('.'),
@@ -521,16 +557,22 @@ class SwiperOptionSetForm extends EntityForm {
       '#step' => 1,
       '#description' => t("If you use slidesPerView:'auto' with loop mode you should tell to Swiper how many slides it should loop (duplicate) using this parameter."),
     ];
-    // Controller
-    //~ $form['parameters']['control'] = [
-    //~ '#type' => '[Swiper Instance]',
-    //~ '#description' => t('Pass here another Swiper instance or array with Swiper instances that should be controlled by this Swiper.'),
-    //~ ];
+
+    // Controller.
+    // $form['parameters']['control'] = [
+    //   '#type' => '[Swiper Instance]',
+    //   '#description' => t('Pass here another Swiper instance or array with Swiper instances that should be controlled by this Swiper.'),
+    // ];
     $form['parameters']['controlInverse'] = [
       '#type' => 'checkbox',
       '#description' => t('Set to true and controlling will be in inverse direction.'),
     ];
-    // Observer
+    $form['parameters']['controlBy'] = [
+      '#type' => 'textfield',
+      '#description' => t("Can be 'slide' or 'container'. Defines a way how to control another slider: slide by slide (with respect to other slider's grid) or depending on all slides/container (depending on total slider percentage) Observer"),
+    ];
+
+    // Observer.
     $form['parameters']['observer'] = [
       '#type' => 'checkbox',
       '#description' => t('Set to true to enable Mutation Observer on Swiper and its elements. In this case Swiper will be updated (reinitialized) each time if you change its style (like hide/show) or modify its child elements (like adding/removing slides).'),
@@ -539,7 +581,14 @@ class SwiperOptionSetForm extends EntityForm {
       '#type' => 'checkbox',
       '#description' => t('Set to true if you also need to watch Mutations for Swiper parent elements.'),
     ];
-    // Callbacks
+
+    // Breakpoints
+    $form['parameters']['breakpoints'] = [
+      '#type' => 'textarea',
+      '#description' => t("	Allows to set different parameter for different responsive breakpoints (screen sizes). Not all parameters can be changed in breakpoints, only those which are not required different layout and logic, like slidesPerView, slidesPerGroup, spaceBetween. Such parameters like slidesPerColumn, loop, direction, effect won't work. "),
+    ];
+
+    // Callbacks.
     $form['parameters']['runCallbacksOnInit'] = [
       '#type' => 'checkbox',
       '#description' => t('Run on[Transition/SlideChange][Start/End] callbacks on swiper initialization. Such callbacks will be fired on initialization in case of your initialSlide is not 0, or you use loop mode.'),
@@ -555,6 +604,22 @@ class SwiperOptionSetForm extends EntityForm {
     $form['parameters']['onSlideChangeEnd'] = [
       '#type' => 'textarea',
       '#description' => t('Callback function with arguments, swiper, will be executed after animation to other slide (next or previous). Receives slider instance as an argument.'),
+    ];
+    $form['parameters']['onSlideNextStart'] = [
+      '#type' => 'textarea',
+      '#description' => t('Same as "onSlideChangeStart" but for "forward" direction only.'),
+    ];
+    $form['parameters']['onSlideNextStart'] = [
+      '#type' => 'textarea',
+      '#description' => t('Same as "onSlideChangeEnd" but for "forward" direction only.'),
+    ];
+    $form['parameters']['onSlidePrevStart'] = [
+      '#type' => 'textarea',
+      '#description' => t('Same as "onSlideChangeStart" but for "backward" direction only.'),
+    ];
+    $form['parameters']['onSlidePrevEnd'] = [
+      '#type' => 'textarea',
+      '#description' => t('Same as "onSlideChangeEnd" but for "backward" direction only.'),
     ];
     $form['parameters']['onTransitionStart'] = [
       '#type' => 'textarea',
@@ -624,6 +689,10 @@ class SwiperOptionSetForm extends EntityForm {
       '#type' => 'textarea',
       '#description' => t('Callback function with arguments, swiper, transition, will be executed everytime when swiper starts animation. Receives swiper instance and current transition duration (in ms) as an arguments'),
     ];
+    $form['parameters']['onAutoplay'] = [
+      '#type' => 'textarea',
+      '#description' => t('Same as onSlideChangeStart but caused by autoplay.'),
+    ];
     $form['parameters']['onAutoplayStart'] = [
       '#type' => 'textarea',
       '#description' => t('Callback function with arguments, swiper, will be executed when when autoplay started'),
@@ -640,7 +709,12 @@ class SwiperOptionSetForm extends EntityForm {
       '#type' => 'textarea',
       '#description' => t('Callback function with arguments, swiper, slide, image, will be executed when lazy loading image will be loaded'),
     ];
-    // Namespace
+    $form['parameters']['onPaginationRendered'] = [
+      '#type' => 'textarea',
+      '#description' => t('Callback function, will be executed after pagination elements generated and added to DOM.'),
+    ];
+
+    // Namespace.
     $form['parameters']['slideClass'] = [
       '#type' => 'textfield',
       '#description' => t('CSS class name of slide.'),
@@ -680,6 +754,18 @@ class SwiperOptionSetForm extends EntityForm {
     $form['parameters']['paginationHiddenClass'] = [
       '#type' => 'textfield',
       '#description' => t('CSS class name of pagination when it becomes inactive.'),
+    ];
+    $form['parameters']['paginationCurrentClass'] = [
+      '#type' => 'textfield',
+      '#description' => t('CSS class name of the element with currently active index in "fraction" pagination.'),
+    ];
+    $form['parameters']['paginationTotalClass'] = [
+      '#type' => 'textfield',
+      '#description' => t('CSS class name of the element with total number of "snaps" in "fraction" pagination.'),
+    ];
+    $form['parameters']['paginationProgressbarClass'] = [
+      '#type' => 'textfield',
+      '#description' => t('CSS class name of pagination progressbar.'),
     ];
     $form['parameters']['buttonDisabledClass'] = [
       '#type' => 'textfield',
@@ -821,19 +907,25 @@ class SwiperOptionSetForm extends EntityForm {
       // Navigation Buttons.
       'nextButton' => '.swiper-button-next',
       'prevButton' => '.swiper-button-prev',
-      // Accessibility.
-      'a11y' => FALSE,
-      'prevSlideMessage' => 'Previous slide',
-      'nextSlideMessage' => 'Next slide',
-      'firstSlideMessage' => 'This is the first slide',
-      'lastSlideMessage' => 'This is the last slide',
       // Scrollbar.
       'scrollbar' => '.swiper-scrollbar',
       'scrollbarHide' => TRUE,
+      'scrollbarDraggable' =>	FALSE,
+      'scrollbarSnapOnRelease' => FALSE,
+      // Accessibility.
+      'a11y' => FALSE,
+      'prevSlideMessage' => t('Previous slide'),
+      'nextSlideMessage' => t('Next slide'),
+      'firstSlideMessage' => t('This is the first slide'),
+      'lastSlideMessage' => t('This is the last slide'),
+      'paginationBulletMessage' => t(	'Go to slide {{index}}'),
       // Keyboard / mousewheel.
       'keyboardControl' => FALSE,
       'mousewheelControl' => FALSE,
       'mousewheelForceToAxis' => FALSE,
+      'mousewheelReleaseOnEdges' => FALSE,
+      'mousewheelInvert' => FALSE,
+      'mousewheelSensitivity' => 1,
       // Hash navigation.
       'hashnav' => FALSE,
       // Images
@@ -841,22 +933,30 @@ class SwiperOptionSetForm extends EntityForm {
       'updateOnImagesReady' => TRUE,
       'lazyLoading' => FALSE,
       'lazyLoadingInPrevNext' => FALSE,
+      'lazyLoadingInPrevNextAmount' => 1,
       'lazyLoadingOnTransitionStart' => FALSE,
       // Loop.
       'loop' => FALSE,
       'loopAdditionalSlides' => 0,
       'loopedSlides' => NULL,
       // Control
-      'control' => '', // Named reference to Swiper instances 
+      //'control' => '', // Named reference to Swiper instances
       'controlInverse' => FALSE,
+      'controlBy' => 'slide',
       // Observer.
       'observer' => FALSE,
       'observeParents' => FALSE,
+      // Breakpoints.
+      'breakpoints' => '',
       // Callbacks.
       'runCallbacksOnInit' => TRUE,
       'onInit' => '',
       'onSlideChangeStart' => '',
       'onSlideChangeEnd' => '',
+      'onSlideNextStart' => '',
+      'onSlideNextEnd' => '',
+      'onSlidePrevStart' => '',
+      'onSlidePrevEnd' => '',
       'onTransitionStart' => '',
       'onTransitionEnd' => '',
       'onTouchStart' => '',
@@ -874,10 +974,12 @@ class SwiperOptionSetForm extends EntityForm {
       'onDestroy' => '',
       'onSetTranslate' => '',
       'onSetTransition' => '',
+      'onAutoplay' => '',
       'onAutoplayStart' => '',
       'onAutoplayStop' => '',
       'onLazyImageLoad' => '',
       'onLazyImageReady' => '',
+      'onPaginationRendered' => '',
       // Namespace.
       'slideClass' => 'swiper-slide',
       'slideActiveClass' => 'swiper-slide-active',
@@ -889,6 +991,9 @@ class SwiperOptionSetForm extends EntityForm {
       'bulletClass' => 'swiper-pagination-bullet',
       'bulletActiveClass' => 'swiper-pagination-bullet-active',
       'paginationHiddenClass' => 'swiper-pagination-hidden',
+      'paginationCurrentClass' =>'swiper-pagination-current',
+      'paginationTotalClass' =>'swiper-pagination-total',
+      'paginationProgressbarClass' => 'swiper-pagination-progressbar',
       'buttonDisabledClass' => 'swiper-button-disabled',
     ];
   }
