@@ -77,7 +77,6 @@ class SwiperOptionSetForm extends EntityForm {
       '#type' => 'number',
       '#min' => 0,
       '#step' => 1,
-
       '#description' => t('Duration of transition between slides (in ms).'),
     ];
     $form['parameters']['setWrapperSize'] = [
@@ -86,19 +85,51 @@ class SwiperOptionSetForm extends EntityForm {
     ];
     $form['parameters']['virtualTranslate'] = [
       '#type' => 'checkbox',
-      '#description' => t(''),
+      '#description' => t('Enabled this option and swiper will be operated as usual except it will not move, real translate values on wrapper will not be set. Useful when you may need to create custom slide transition.'),
     ];
+    $form['parameters']['width'] = [
+      '#type' => 'number',
+      '#min' => 0,
+      '#step' => 1,
+      '#description' => t('Swiper width (in px). Parameter allows to force Swiper width. Useful only if you initialize Swiper when it is hidden.<strong>Setting this parameter will make Swiper not responsive</strong>'),
+    ];
+    $form['parameters']['height'] = [
+      '#type' => 'number',
+      '#min' => 0,
+      '#step' => 1,
+      '#description' => t('Swiper height (in px). Parameter allows to force Swiper height. Useful only if you initialize Swiper when it is hidden.<strong>Setting this parameter will make Swiper not responsive</strong>'),
+    ];
+    $form['parameters']['autoHeight'] = [
+      '#type' => 'checkbox',
+      '#description' => t('Set to true and slider wrapper will adopt its height to the height of the currently active slide.'),
+    ];
+    $form['parameters']['roundLengths'] = [
+      '#type' => 'checkbox',
+      '#description' => t('Set to true to round values of slides width and height to prevent blurry texts on usual resolution screens (if you have such).'),
+    ];
+    $form['parameters']['nested'] = [
+      '#type' => 'checkbox',
+      '#description' => t('Set to true on nested Swiper for correct touch events interception. Use only on nested swipers that use same direction as the parent one.'),
+    ];
+
+    // Autoplay.
     $form['parameters']['autoplay'] = [
       '#type' => 'number',
       '#min' => 0,
       '#step' => 1,
       '#description' => t('Delay between transitions (in ms). If set to zero or blank, auto play will be disabled.'),
     ];
+    $form['parameters']['autoplayStopOnLast'] = [
+      '#type' => 'checkbox',
+      '#description' => t('Enable this parameter and autoplay will be stopped when it reaches last slide (has no effect in loop mode).'),
+    ];
     $form['parameters']['autoplayDisableOnInteraction'] = [
       '#type' => 'checkbox',
       '#description' => t('Set to false and autoplay will not be disabled after user interactions (swipes), it will be restarted every time after interaction.'),
     ];
-    // Progress
+
+
+    // Progress.
     $form['parameters']['watchSlidesProgress'] = [
       '#type' => 'checkbox',
       '#description' => t('Enable this feature to calculate each slides progress.'),
@@ -107,7 +138,7 @@ class SwiperOptionSetForm extends EntityForm {
       '#type' => 'checkbox',
       '#description' => t("'Watch slides progress' should be enabled. Enable this option and slides that are in viewport will have additional visible class."),
     ];
-    // Freemode
+    // Freemode.
     $form['parameters']['freeMode'] = [
       '#type' => 'checkbox',
       '#description' => t('If true then slides will not have fixed positions.'),
@@ -142,7 +173,7 @@ class SwiperOptionSetForm extends EntityForm {
       '#description' => t('Set to true to enable snap to slides positions in free mode.'),
     ];
 
-    // Effects
+    // Effects.
     $form['parameters']['effect'] = [
       '#type' => 'select',
       '#options' => [
@@ -154,13 +185,29 @@ class SwiperOptionSetForm extends EntityForm {
       ],
       '#description' => t('Could be "slide", "fade", "cube", "coverflow" or "flip".'),
     ];
-    // @todo add textareas for effect config and add defaults for them.
-    // Parallax
+    $form['parameters']['fade'] = [
+      '#type' => 'textarea',
+      '#description' => t('Fade effect parameters.'),
+    ];
+    $form['parameters']['cube'] = [
+      '#type' => 'textarea',
+      '#description' => t('Cube effect parameters. For better performance you may disable shadows.'),
+    ];
+    $form['parameters']['coverflow'] = [
+      '#type' => 'textarea',
+      '#description' => t('Coverflow effect parameters. For better performance you may disable shadows.'),
+    ];
+    $form['parameters']['flip'] = [
+      '#type' => 'textarea',
+      '#description' => t('Flip effect parameters. limitRotation (when enabled) limits slides rotation angle to 180deg maximum. It allows to quickly "flip" between different slides. If you use "slow" transitions then it is better to disable it.'),
+    ];
+
+    // Parallax.
     $form['parameters']['parallax'] = [
       '#type' => 'checkbox',
       '#description' => t('Enable, if you want to use "parallaxed" elements inside of slider.'),
     ];
-    // Slides Grid
+    // Slides grid.
     $form['parameters']['spaceBetween'] = [
       '#type' => 'number',
       '#min' => 0,
@@ -197,12 +244,30 @@ class SwiperOptionSetForm extends EntityForm {
       '#type' => 'checkbox',
       '#description' => t('If true, then active slide will be centered, not always on the left side.'),
     ];
+    $form['parameters']['slidesOffsetBefore'] = [
+      '#type' => 'number',
+      '#min' => 0,
+      '#step' => 1,
+      '#description' => t('Add (in px) additional slide offset in the beginning of the container (before all slides).'),
+    ];
+    $form['parameters']['slidesOffsetAfter'] = [
+      '#type' => 'number',
+      '#min' => 0,
+      '#step' => 1,
+      '#description' => t('Add (in px) additional slide offset in the end of the container (after all slides).'),
+    ];
+
     // Grab Cursor
     $form['parameters']['grabCursor'] = [
       '#type' => 'checkbox',
       '#description' => t('This option may a little improve desktop usability. If true, user will see the "grab" cursor when hover on Swiper.'),
     ];
+
     // Touches
+    $form['parameters']['touchEventsTarget'] = [
+      '#type' => 'textfield',
+      '#description' => t('	Target element to listen touch events on. Can be "container" (to listen for touch events on swiper-container) or "wrapper" (to listen for touch events on swiper-wrapper).'),
+    ];
     $form['parameters']['touchRatio'] = [
       '#type' => 'number',
       '#min' => 0,
@@ -256,7 +321,18 @@ class SwiperOptionSetForm extends EntityForm {
       '#type' => 'checkbox',
       '#description' => t('If enabled, then propagation of "touchmove" will be stopped.'),
     ];
-    // Touch Resistance
+    $form['parameters']['iOSEdgeSwipeDetection'] = [
+      '#type' => 'checkbox',
+      '#description' => t('IEnable to release Swiper events for swipe-to-go-back work in iOS UIWebView.'),
+    ];
+    $form['parameters']['iOSEdgeSwipeThreshold'] = [
+      '#type' => 'number',
+      '#min' => 0,
+      '#step' => 1,
+      '#description' => t('Area (in px) from left edge of the screen to release touch events for swipe-to-go-back in iOS UIWebView.'),
+    ];
+
+    // Touch Resistance.
     $form['parameters']['resistance'] = [
       '#type' => 'checkbox',
       '#description' => t('Set to false if you want to disable resistant bounds.'),
@@ -267,7 +343,8 @@ class SwiperOptionSetForm extends EntityForm {
       '#step' => 0.01,
       '#description' => t('This option allows you to control resistance ratio.'),
     ];
-    // Clicks
+
+    // Clicks.
     $form['parameters']['preventClicks'] = [
       '#type' => 'checkbox',
       '#description' => t('Set to true to prevent accidental unwanted clicks on links during swiping.'),
@@ -280,7 +357,8 @@ class SwiperOptionSetForm extends EntityForm {
       '#type' => 'checkbox',
       '#description' => t('Set to true and click on any slide will produce transition to this slide.'),
     ];
-    // Swiping / No swiping
+
+    // Swiping / No swiping.
     $form['parameters']['allowSwipeToPrev'] = [
       '#type' => 'checkbox',
       '#description' => t('Set to false to disable swiping to previous slide direction (to left or top).'),
@@ -301,10 +379,21 @@ class SwiperOptionSetForm extends EntityForm {
       '#type' => 'textfield',
       '#description' => t('String with CSS selector or HTML element of the container with pagination that will work as only available handler for swiping.'),
     ];
-    // Pagination
+
+    // Pagination.
     $form['parameters']['pagination'] = [
       '#type' => 'textfield',
       '#description' => t('String with CSS selector or HTML element of the container with pagination.'),
+    ];
+    $form['parameters']['paginationType'] = [
+      '#type' => 'select',
+      '#options' => [
+        'bullets' => t('Bullets'),
+        'fraction' => t('Fraction'),
+        'progress' => t('Progress'),
+        'custom' => t('Custom'),
+      ],
+      '#description' => t('Type of pagination. Can be "bullets", "fraction", "progress" or "custom"'),
     ];
     $form['parameters']['paginationHide'] = [
       '#type' => 'checkbox',
@@ -314,11 +403,28 @@ class SwiperOptionSetForm extends EntityForm {
       '#type' => 'checkbox',
       '#description' => t('If true then clicking on pagination button will cause transition to appropriate slide.'),
     ];
-    $form['parameters']['paginationBulletRender'] = [
+    $form['parameters']['paginationElement'] = [
       '#type' => 'textfield',
-      '#description' => t('This parameter allows totally customize pagination bullets, you need to pass here the name of a function that accepts index number of pagination bullet and required element class name (className).'),
+      '#description' => t('Defines which HTML tag will be use to represent single pagination bullet. . Only for bullets pagination type.'),
     ];
-    // Navigation Buttons
+    $form['parameters']['paginationBulletRender'] = [
+      '#type' => 'textarea',
+      '#description' => t('This parameter allows totally customize pagination bullets, you need to pass here a function that accepts index number of pagination bullet and required element class name (className). Only for bullets pagination type.'),
+    ];
+    $form['parameters']['paginationFractionRender'] = [
+      '#type' => 'textarea',
+      '#description' => t('This parameter allows to customize "fraction" pagination html. Only for fraction pagination type.'),
+    ];
+    $form['parameters']['paginationProgressRender'] = [
+      '#type' => 'textarea',
+      '#description' => t('This parameter allows to customize "progress" pagination. Only for progress pagination type.'),
+    ];
+    $form['parameters']['paginationCustomRender'] = [
+      '#type' => 'textarea',
+      '#description' => t('This parameter is required for custom pagination type where you have to specify how it should be rendered.'),
+    ];
+
+    // Navigation Buttons.
     $form['parameters']['nextButton'] = [
       '#type' => 'textfield',
       '#description' => t('String with CSS selector or HTML element of the element that will work like "next" button after click on it.'),
@@ -327,7 +433,18 @@ class SwiperOptionSetForm extends EntityForm {
       '#type' => 'textfield',
       '#description' => t('String with CSS selector or HTML element of the element that will work like "prev" button after click on it.'),
     ];
-    // Accessibility
+
+    // Scollbar
+    $form['parameters']['scrollbar'] = [
+      '#type' => 'textfield',
+      '#description' => t('String with CSS selector or HTML element of the container with scrollbar.'),
+    ];
+    $form['parameters']['scrollbarHide'] = [
+      '#type' => 'checkbox',
+      '#description' => t('Hide scrollbar automatically after user interaction.'),
+    ];
+
+    // Accessibility.
     $form['parameters']['a11y'] = [
       '#type' => 'checkbox',
       '#description' => t('Option to enable keyboard accessibility to provide foucsable navigation buttons and basic ARIA for screen readers.'),
@@ -348,15 +465,7 @@ class SwiperOptionSetForm extends EntityForm {
       '#type' => 'textfield',
       '#description' => t('Message for screen readers for previous button when swiper is on last slide.'),
     ];
-    // Scollbar
-    $form['parameters']['scrollbar'] = [
-      '#type' => 'textfield',
-      '#description' => t('String with CSS selector or HTML element of the container with scrollbar.'),
-    ];
-    $form['parameters']['scrollbarHide'] = [
-      '#type' => 'checkbox',
-      '#description' => t('Hide scrollbar automatically after user interaction.'),
-    ];
+
     // Keyboard / Mousewheel
     $form['parameters']['keyboardControl'] = [
       '#type' => 'checkbox',
@@ -632,8 +741,14 @@ class SwiperOptionSetForm extends EntityForm {
       'speed' => 300,
       'setWrapperSize' => FALSE,
       'virtualTranslate' => FALSE,
+      'width' => '',
+      'height' => '',
+      'autoHeight' => FALSE,
+      'roundLengths' => FALSE,
+      'nested' => FALSE,
       // Autoplay.
       'autoplay' => 1000,
+      'autoplayStopOnLast' => FALSE,
       'autoplayDisableOnInteraction' => TRUE,
       // Progress.
       'watchSlidesProgress' => FALSE,
@@ -648,6 +763,10 @@ class SwiperOptionSetForm extends EntityForm {
       'freeModeSticky' => FALSE,
       // Effects.
       'effect' => 'slide',
+      'fade' => '',
+      'cube' => '',
+      'coverflow' => '',
+      'flip' => '',
       // Parallax.
       'parallax' => FALSE,
       // Slides grid.
@@ -657,9 +776,12 @@ class SwiperOptionSetForm extends EntityForm {
       'slidesPerColumnFill' => 'column',
       'slidesPerGroup' => 1,
       'centeredSlides' => FALSE,
+      'slidesOffsetBefore' => 0,
+      'slidesOffsetAfter' => 0,
       // Grab cursor.
       'grabCursor' => FALSE,
       // Touches.
+      'touchEventsTarget' => 'container',
       'touchRatio' => 1,
       'touchAngle' => 45,
       'simulateTouch' => TRUE,
@@ -671,6 +793,8 @@ class SwiperOptionSetForm extends EntityForm {
       'onlyExternal' => FALSE,
       'threshold' => 0,
       'touchMoveStopPropagation' => TRUE,
+      'iOSEdgeSwipeDetection' => FALSE,
+      'iOSEdgeSwipeThreshold' => 20,
       // Touch resistance.
       'resistance' => TRUE,
       'resistanceRatio' => 0.85,
@@ -686,9 +810,14 @@ class SwiperOptionSetForm extends EntityForm {
       'swipeHandler' => NULL,
       // Pagination.
       'pagination' => '.swiper-pagination',
+      'paginationType' => 'bullets',
       'paginationHide' => TRUE,
       'paginationClickable' => FALSE,
+      'paginationElement' => 'span',
       'paginationBulletRender' => NULL,
+      'paginationFractionRender' => NULL,
+      'paginationProgressRender' => NULL,
+      'paginationCustomRender' => NULL,
       // Navigation Buttons.
       'nextButton' => '.swiper-button-next',
       'prevButton' => '.swiper-button-prev',
