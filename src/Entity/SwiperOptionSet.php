@@ -58,7 +58,7 @@ class SwiperOptionSet extends ConfigEntityBase implements SwiperOptionSetInterfa
    *
    * @var array
    */
-  protected $parameters;
+  protected $parameters = [];
 
   /**
    * {@inheritdoc}
@@ -74,5 +74,6 @@ class SwiperOptionSet extends ConfigEntityBase implements SwiperOptionSetInterfa
     foreach ($values as $parameter => $value) {
       $this->parameters[$parameter] = $value;
     }
+    return $this;
   }
 }
