@@ -52,20 +52,35 @@ class SwiperOptionSetForm extends EntityForm {
       '#disabled' => !$swiper_option_set->isNew(),
     ];
 
-    $form['parameters'] = [
-      '#type' => 'details',
-      '#title' => $this->t('Swiper parameters'),
+    // Use this invisible element only to group parameter values in the form
+    // state values array inside a parent 'parameters' element that corresponds
+    // to the config entity's property.
+    $form['parameters'] = array(
+      '#type' => 'ccontainer',
       '#tree' => TRUE,
-      '#open' => TRUE,
-    ];
+    );
 
-    $form['parameters']['initialSlide'] = [
+    // Display the form in tabs as there are way too many options to display for
+    // one single form.
+    $form['tabs'] = array(
+      '#type' => 'vertical_tabs',
+      '#tree' => TRUE,
+      '#title' => $this->t('Swiper parameters'),
+    );
+
+    // Common settings.
+    $form['common'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Basic settings'),
+      '#group' => 'tabs',
+    ];
+    $form['common']['initialSlide'] = [
       '#type' => 'number',
       '#min' => 0,
       '#step' => 1,
       '#description' => $this->t('Index number of initial slide.'),
     ];
-    $form['parameters']['direction'] = [
+    $form['common']['direction'] = [
       '#type' => 'select',
       '#options' => [
         'horizontal' => $this->t('Horizontal'),
@@ -73,108 +88,156 @@ class SwiperOptionSetForm extends EntityForm {
       ],
       '#description' => $this->t("Could be 'horizontal' or 'vertical' (for vertical slider)."),
     ];
-    $form['parameters']['speed'] = [
+    $form['common']['speed'] = [
       '#type' => 'number',
       '#min' => 0,
       '#step' => 1,
       '#description' => $this->t('Duration of transition between slides (in ms).'),
     ];
-    $form['parameters']['setWrapperSize'] = [
+    $form['common']['setWrapperSize'] = [
       '#type' => 'checkbox',
       '#description' => $this->t("Enabled this option and plugin will set width/height on swiper wrapper equal to total size of all slides. Mostly should be used as compatibility fallback option for browser that don't support flexbox layout well."),
     ];
-    $form['parameters']['virtualTranslate'] = [
+    $form['common']['virtualTranslate'] = [
       '#type' => 'checkbox',
       '#description' => $this->t('Enabled this option and swiper will be operated as usual except it will not move, real translate values on wrapper will not be set. Useful when you may need to create custom slide transition.'),
     ];
-    $form['parameters']['width'] = [
+    $form['common']['width'] = [
       '#type' => 'number',
       '#min' => 0,
       '#step' => 1,
       '#description' => $this->t('Swiper width (in px). Parameter allows to force Swiper width. Useful only if you initialize Swiper when it is hidden.<strong>Setting this parameter will make Swiper not responsive</strong>'),
     ];
-    $form['parameters']['height'] = [
+    $form['common']['height'] = [
       '#type' => 'number',
       '#min' => 0,
       '#step' => 1,
       '#description' => $this->t('Swiper height (in px). Parameter allows to force Swiper height. Useful only if you initialize Swiper when it is hidden.<strong>Setting this parameter will make Swiper not responsive</strong>'),
     ];
-    $form['parameters']['autoHeight'] = [
+    $form['common']['autoHeight'] = [
       '#type' => 'checkbox',
       '#description' => $this->t('Set to true and slider wrapper will adopt its height to the height of the currently active slide.'),
     ];
-    $form['parameters']['roundLengths'] = [
+    $form['common']['roundLengths'] = [
       '#type' => 'checkbox',
       '#description' => $this->t('Set to true to round values of slides width and height to prevent blurry texts on usual resolution screens (if you have such).'),
     ];
-    $form['parameters']['nested'] = [
+    $form['common']['nested'] = [
       '#type' => 'checkbox',
       '#description' => $this->t('Set to true on nested Swiper for correct touch events interception. Use only on nested swipers that use same direction as the parent one.'),
     ];
+    $form['common']['parallax'] = [
+      '#type' => 'checkbox',
+      '#description' => $this->t('Enable, if you want to use "parallaxed" elements inside of slider.'),
+    ];
+    $form['common']['grabCursor'] = [
+      '#type' => 'checkbox',
+      '#description' => $this->t('This option may a little improve desktop usability. If true, user will see the "grab" cursor when hover on Swiper.'),
+    ];
+    // Navigation Buttons.
+    $form['common']['nextButton'] = [
+      '#type' => 'textfield',
+      '#description' => $this->t('String with CSS selector of the element that will work like "next" button after click on it.'),
+    ];
+    $form['common']['prevButton'] = [
+      '#type' => 'textfield',
+      '#description' => $this->t('String with CSS selector of the element that will work like "prev" button after click on it.'),
+    ];
+    // Hash Navigation
+    $form['common']['hashnav'] = [
+      '#type' => 'checkbox',
+      '#description' => $this->t('Set to true to enable hash url navigation to for slides.'),
+    ];
+    // Breakpoints
+    $form['common']['breakpoints'] = [
+      '#type' => 'textarea',
+      '#description' => $this->t("	Allows to set different parameter for different responsive breakpoints (screen sizes). Not all parameters can be changed in breakpoints, only those which are not required different layout and logic, like slidesPerView, slidesPerGroup, spaceBetween. Such parameters like slidesPerColumn, loop, direction, effect won't work. "),
+    ];
+
 
     // Autoplay.
-    $form['parameters']['autoplay'] = [
+    $form['autoplay_wrapper'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Autoplay'),
+      '#group' => 'tabs',
+    ];
+    $form['autoplay_wrapper']['autoplay'] = [
       '#type' => 'number',
       '#min' => 0,
       '#step' => 1,
       '#description' => $this->t('Delay between transitions (in ms). If set to zero or blank, auto play will be disabled.'),
     ];
-    $form['parameters']['autoplayStopOnLast'] = [
+    $form['autoplay_wrapper']['autoplayStopOnLast'] = [
       '#type' => 'checkbox',
       '#description' => $this->t('Enable this parameter and autoplay will be stopped when it reaches last slide (has no effect in loop mode).'),
     ];
-    $form['parameters']['autoplayDisableOnInteraction'] = [
+    $form['autoplay_wrapper']['autoplayDisableOnInteraction'] = [
       '#type' => 'checkbox',
       '#description' => $this->t('Set to false and autoplay will not be disabled after user interactions (swipes), it will be restarted every time after interaction.'),
     ];
 
-
     // Progress.
-    $form['parameters']['watchSlidesProgress'] = [
+    $form['progress'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Progress'),
+      '#group' => 'tabs',
+    ];
+    $form['progress']['watchSlidesProgress'] = [
       '#type' => 'checkbox',
       '#description' => $this->t('Enable this feature to calculate each slides progress.'),
     ];
-    $form['parameters']['watchSlidesVisibility'] = [
+    $form['progress']['watchSlidesVisibility'] = [
       '#type' => 'checkbox',
       '#description' => $this->t("'Watch slides progress' should be enabled. Enable this option and slides that are in viewport will have additional visible class."),
     ];
+
     // Freemode.
-    $form['parameters']['freeMode'] = [
+    $form['freemode'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Free mode'),
+      '#group' => 'tabs',
+    ];
+    $form['freemode']['freeMode'] = [
       '#type' => 'checkbox',
       '#description' => $this->t('If true then slides will not have fixed positions.'),
     ];
-    $form['parameters']['freeModeMomentum'] = [
+    $form['freemode']['freeModeMomentum'] = [
       '#type' => 'checkbox',
       '#description' => $this->t('If true, then slide will keep moving for a while after you release it.'),
     ];
-    $form['parameters']['freeModeMomentumRatio'] = [
+    $form['freemode']['freeModeMomentumRatio'] = [
       '#type' => 'number',
       '#min' => 0,
       '#step' => 1,
       '#description' => $this->t('Higher value produces larger momentum distance after you release slider.'),
     ];
-    $form['parameters']['freeModeMomentumBounce'] = [
+    $form['freemode']['freeModeMomentumBounce'] = [
       '#type' => 'checkbox',
       '#description' => $this->t('Set to false if you want to disable momentum bounce in free mode.'),
     ];
-    $form['parameters']['freeModeMomentumBounceRatio'] = [
+    $form['freemode']['freeModeMomentumBounceRatio'] = [
       '#type' => 'number',
       '#min' => 0,
       '#step' => 1,
       '#description' => $this->t('Higher value produces larger momentum bounce effect.'),
     ];
-    $form['parameters']['freeModeMinimumVelocity'] = [
+    $form['freemode']['freeModeMinimumVelocity'] = [
       '#min' => 0,
       '#step' => 0.1,
       '#description' => $this->t('Minimum touchmove-velocity required to trigger free mode momentum.'),
     ];
-    $form['parameters']['freeModeSticky'] = [
+    $form['freemode']['freeModeSticky'] = [
       '#type' => 'checkbox',
       '#description' => $this->t('Set to true to enable snap to slides positions in free mode.'),
     ];
 
     // Effects.
-    $form['parameters']['effect'] = [
+    $form['effect_wrapper'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Effects'),
+      '#group' => 'tabs',
+    ];
+    $form['effect_wrapper']['effect'] = [
       '#type' => 'select',
       '#options' => [
         'slide' => $this->t('Slide'),
@@ -185,48 +248,48 @@ class SwiperOptionSetForm extends EntityForm {
       ],
       '#description' => $this->t('Could be "slide", "fade", "cube", "coverflow" or "flip".'),
     ];
-    $form['parameters']['fade'] = [
+    $form['effect_wrapper']['fade'] = [
       '#type' => 'textarea',
       '#description' => $this->t('Fade effect parameters.'),
     ];
-    $form['parameters']['cube'] = [
+    $form['effect_wrapper']['cube'] = [
       '#type' => 'textarea',
       '#description' => $this->t('Cube effect parameters. For better performance you may disable shadows.'),
     ];
-    $form['parameters']['coverflow'] = [
+    $form['effect_wrapper']['coverflow'] = [
       '#type' => 'textarea',
       '#description' => $this->t('Coverflow effect parameters. For better performance you may disable shadows.'),
     ];
-    $form['parameters']['flip'] = [
+    $form['effect_wrapper']['flip'] = [
       '#type' => 'textarea',
       '#description' => $this->t('Flip effect parameters. limitRotation (when enabled) limits slides rotation angle to 180deg maximum. It allows to quickly "flip" between different slides. If you use "slow" transitions then it is better to disable it.'),
     ];
 
-    // Parallax.
-    $form['parameters']['parallax'] = [
-      '#type' => 'checkbox',
-      '#description' => $this->t('Enable, if you want to use "parallaxed" elements inside of slider.'),
-    ];
     // Slides grid.
-    $form['parameters']['spaceBetween'] = [
+    $form['slides_grid'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Slides grid'),
+      '#group' => 'tabs',
+    ];
+    $form['slides_grid']['spaceBetween'] = [
       '#type' => 'number',
       '#min' => 0,
       '#step' => 1,
       '#description' => $this->t('Distance between slides in px.'),
     ];
-    $form['parameters']['slidesPerView'] = [
+    $form['slides_grid']['slidesPerView'] = [
       '#type' => 'number',
       '#min' => 0,
       '#step' => 1,
       '#description' => $this->t("Number of slides per view (slides visible at the same time on slider's container) or zero to set automatic."),
     ];
-    $form['parameters']['slidesPerColumn'] = [
+    $form['slides_grid']['slidesPerColumn'] = [
       '#type' => 'number',
       '#min' => 0,
       '#step' => 1,
       '#description' => $this->t('Number of slides per column, for multirow layout.'),
     ];
-    $form['parameters']['slidesPerColumnFill'] = [
+    $form['slides_grid']['slidesPerColumnFill'] = [
       '#type' => 'select',
       '#options' => [
         'row' => $this->t('Row'),
@@ -234,110 +297,114 @@ class SwiperOptionSetForm extends EntityForm {
       ],
       '#description' => $this->t("Could be 'column' or 'row'. Defines how slides should fill rows, by column or by row."),
     ];
-    $form['parameters']['slidesPerGroup'] = [
+    $form['slides_grid']['slidesPerGroup'] = [
       '#type' => 'number',
       '#min' => 0,
       '#step' => 1,
       '#description' => $this->t('Set numbers of slides to define and enable group sliding. Useful to use with slidesPerView > 1.'),
     ];
-    $form['parameters']['centeredSlides'] = [
+    $form['slides_grid']['centeredSlides'] = [
       '#type' => 'checkbox',
       '#description' => $this->t('If true, then active slide will be centered, not always on the left side.'),
     ];
-    $form['parameters']['slidesOffsetBefore'] = [
+    $form['slides_grid']['slidesOffsetBefore'] = [
       '#type' => 'number',
       '#min' => 0,
       '#step' => 1,
       '#description' => $this->t('Add (in px) additional slide offset in the beginning of the container (before all slides).'),
     ];
-    $form['parameters']['slidesOffsetAfter'] = [
+    $form['slides_grid']['slidesOffsetAfter'] = [
       '#type' => 'number',
       '#min' => 0,
       '#step' => 1,
       '#description' => $this->t('Add (in px) additional slide offset in the end of the container (after all slides).'),
     ];
 
-    // Grab Cursor
-    $form['parameters']['grabCursor'] = [
-      '#type' => 'checkbox',
-      '#description' => $this->t('This option may a little improve desktop usability. If true, user will see the "grab" cursor when hover on Swiper.'),
+    // Touches.
+    $form['touches'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Touches'),
+      '#group' => 'tabs',
     ];
-
-    // Touches
-    $form['parameters']['touchEventsTarget'] = [
+    $form['touches']['touchEventsTarget'] = [
       '#type' => 'textfield',
       '#description' => $this->t('	Target element to listen touch events on. Can be "container" (to listen for touch events on swiper-container) or "wrapper" (to listen for touch events on swiper-wrapper).'),
     ];
-    $form['parameters']['touchRatio'] = [
+    $form['touches']['touchRatio'] = [
       '#type' => 'number',
       '#min' => 0,
       '#step' => 1,
     ];
-    $form['parameters']['touchAngle'] = [
+    $form['touches']['touchAngle'] = [
       '#type' => 'number',
       '#min' => 0,
       '#step' => 1,
       '#description' => $this->t('Allowable angle (in degrees) to trigger touch move.'),
     ];
-    $form['parameters']['simulateTouch'] = [
+    $form['touches']['simulateTouch'] = [
       '#type' => 'checkbox',
       '#description' => $this->t('If true, Swiper will accept mouse events like touch events (click and drag to change slides).'),
     ];
-    $form['parameters']['shortSwipes'] = [
+    $form['touches']['shortSwipes'] = [
       '#type' => 'checkbox',
       '#description' => $this->t('Set to false if you want to disable short swipes.'),
     ];
-    $form['parameters']['longSwipes'] = [
+    $form['touches']['longSwipes'] = [
       '#type' => 'checkbox',
       '#description' => $this->t('Set to false if you want to disable long swipes.'),
     ];
-    $form['parameters']['longSwipesRatio'] = [
+    $form['touches']['longSwipesRatio'] = [
       '#type' => 'number',
       '#min' => 0,
       '#step' => 0.1,
       '#description' => $this->t('Ratio to trigger swipe to next/previous slide during long swipes.'),
     ];
-    $form['parameters']['longSwipesMs'] = [
+    $form['touches']['longSwipesMs'] = [
       '#type' => 'number',
       '#min' => 0,
       '#step' => 1,
       '#description' => $this->t('Minimal duration (in ms) to trigger swipe to next/previous slide during long swipes.'),
     ];
-    $form['parameters']['followFinger'] = [
+    $form['touches']['followFinger'] = [
       '#type' => 'checkbox',
       '#description' => $this->t('If disabled, then slider will be animated only when you release it, it will not move while you hold your finger on it.'),
     ];
-    $form['parameters']['onlyExternal'] = [
+    $form['touches']['onlyExternal'] = [
       '#type' => 'checkbox',
       '#description' => $this->t('If true, then the only way to switch the slide is use of external API functions like slidePrev or slideNext.'),
     ];
-    $form['parameters']['threshold'] = [
+    $form['touches']['threshold'] = [
       '#type' => 'number',
       '#min' => 0,
       '#step' => 1,
       '#description' => $this->t('Threshold value in px. If "touch distance" will be lower than this value then swiper will not move.'),
     ];
-    $form['parameters']['touchMoveStopPropagation'] = [
+    $form['touches']['touchMoveStopPropagation'] = [
       '#type' => 'checkbox',
       '#description' => $this->t('If enabled, then propagation of "touchmove" will be stopped.'),
     ];
-    $form['parameters']['iOSEdgeSwipeDetection'] = [
+    $form['touches']['iOSEdgeSwipeDetection'] = [
       '#type' => 'checkbox',
       '#description' => $this->t('IEnable to release Swiper events for swipe-to-go-back work in iOS UIWebView.'),
     ];
-    $form['parameters']['iOSEdgeSwipeThreshold'] = [
+    $form['touches']['iOSEdgeSwipeThreshold'] = [
       '#type' => 'number',
       '#min' => 0,
       '#step' => 1,
       '#description' => $this->t('Area (in px) from left edge of the screen to release touch events for swipe-to-go-back in iOS UIWebView.'),
     ];
 
+    $form['resistance_clicks'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Touch resistance and clicks'),
+      '#group' => 'tabs',
+    ];
     // Touch Resistance.
-    $form['parameters']['resistance'] = [
+    $form['resistance_clicks']['resistance'] = [
       '#type' => 'checkbox',
       '#description' => $this->t('Set to false if you want to disable resistant bounds.'),
     ];
-    $form['parameters']['resistanceRatio'] = [
+    $form['resistance_clicks']['resistanceRatio'] = [
       '#type' => 'number',
       '#min' => 0,
       '#step' => 0.01,
@@ -345,47 +412,57 @@ class SwiperOptionSetForm extends EntityForm {
     ];
 
     // Clicks.
-    $form['parameters']['preventClicks'] = [
+    $form['resistance_clicks']['preventClicks'] = [
       '#type' => 'checkbox',
       '#description' => $this->t('Set to true to prevent accidental unwanted clicks on links during swiping.'),
     ];
-    $form['parameters']['preventClicksPropagation'] = [
+    $form['resistance_clicks']['preventClicksPropagation'] = [
       '#type' => 'checkbox',
       '#description' => $this->t('Set to true to stop clicks event propagation on links during swiping.'),
     ];
-    $form['parameters']['slideToClickedSlide'] = [
+    $form['resistance_clicks']['slideToClickedSlide'] = [
       '#type' => 'checkbox',
       '#description' => $this->t('Set to true and click on any slide will produce transition to this slide.'),
     ];
 
     // Swiping / No swiping.
-    $form['parameters']['allowSwipeToPrev'] = [
+    $form['swiping'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Swiping / No swiping'),
+      '#group' => 'tabs',
+    ];
+    $form['swiping']['allowSwipeToPrev'] = [
       '#type' => 'checkbox',
       '#description' => $this->t('Set to false to disable swiping to previous slide direction (to left or top).'),
     ];
-    $form['parameters']['allowSwipeToNext'] = [
+    $form['swiping']['allowSwipeToNext'] = [
       '#type' => 'checkbox',
       '#description' => $this->t('Set to false to disable swiping to next slide direction (to right or bottom).'),
     ];
-    $form['parameters']['noSwiping'] = [
+    $form['swiping']['noSwiping'] = [
       '#type' => 'checkbox',
       '#description' => $this->t('Set to false to disable swiping to next slide direction (to right or bottom).'),
     ];
-    $form['parameters']['noSwipingClass'] = [
+    $form['swiping']['noSwipingClass'] = [
       '#type' => 'textfield',
       '#description' => $this->t("If true, then you can add noSwipingClass class to swiper's slide to prevent/disable swiping on this element."),
     ];
-    $form['parameters']['swipeHandler'] = [
+    $form['swiping']['swipeHandler'] = [
       '#type' => 'textfield',
       '#description' => $this->t('String with CSS selector of the container with pagination that will work as only available handler for swiping.'),
     ];
 
     // Pagination.
-    $form['parameters']['pagination'] = [
+    $form['pagination_wrapper'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Pagination'),
+      '#group' => 'tabs',
+    ];
+    $form['pagination_wrapper']['pagination'] = [
       '#type' => 'textfield',
       '#description' => $this->t('String with CSS selector of the container with pagination.'),
     ];
-    $form['parameters']['paginationType'] = [
+    $form['pagination_wrapper']['paginationType'] = [
       '#type' => 'select',
       '#options' => [
         'bullets' => $this->t('Bullets'),
@@ -395,163 +472,172 @@ class SwiperOptionSetForm extends EntityForm {
       ],
       '#description' => $this->t('Type of pagination. Can be "bullets", "fraction", "progress" or "custom"'),
     ];
-    $form['parameters']['paginationHide'] = [
+    $form['pagination_wrapper']['paginationHide'] = [
       '#type' => 'checkbox',
       '#description' => $this->t("Toggle (hide/true) pagination container visibility when click on Slider's container."),
     ];
-    $form['parameters']['paginationClickable'] = [
+    $form['pagination_wrapper']['paginationClickable'] = [
       '#type' => 'checkbox',
       '#description' => $this->t('If true then clicking on pagination button will cause transition to appropriate slide.'),
     ];
-    $form['parameters']['paginationElement'] = [
+    $form['pagination_wrapper']['paginationElement'] = [
       '#type' => 'textfield',
       '#description' => $this->t('Defines which HTML tag will be use to represent single pagination bullet. . Only for bullets pagination type.'),
     ];
-    $form['parameters']['paginationBulletRender'] = [
+    $form['pagination_wrapper']['paginationBulletRender'] = [
       '#type' => 'textarea',
       '#description' => $this->t('This parameter allows totally customize pagination bullets, you need to pass here a function that accepts index number of pagination bullet and required element class name (className). Only for bullets pagination type.'),
     ];
-    $form['parameters']['paginationFractionRender'] = [
+    $form['pagination_wrapper']['paginationFractionRender'] = [
       '#type' => 'textarea',
       '#description' => $this->t('This parameter allows to customize "fraction" pagination html. Only for fraction pagination type.'),
     ];
-    $form['parameters']['paginationProgressRender'] = [
+    $form['pagination_wrapper']['paginationProgressRender'] = [
       '#type' => 'textarea',
       '#description' => $this->t('This parameter allows to customize "progress" pagination. Only for progress pagination type.'),
     ];
-    $form['parameters']['paginationCustomRender'] = [
+    $form['pagination_wrapper']['paginationCustomRender'] = [
       '#type' => 'textarea',
       '#description' => $this->t('This parameter is required for custom pagination type where you have to specify how it should be rendered.'),
     ];
 
-    // Navigation Buttons.
-    $form['parameters']['nextButton'] = [
-      '#type' => 'textfield',
-      '#description' => $this->t('String with CSS selector of the element that will work like "next" button after click on it.'),
-    ];
-    $form['parameters']['prevButton'] = [
-      '#type' => 'textfield',
-      '#description' => $this->t('String with CSS selector of the element that will work like "prev" button after click on it.'),
-    ];
-
     // Scollbar.
-    $form['parameters']['scrollbar'] = [
+    $form['scrollbar_wrapper'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Scrollbar'),
+      '#group' => 'tabs',
+    ];
+    $form['scrollbar_wrapper']['scrollbar'] = [
       '#type' => 'textfield',
       '#description' => $this->t('String with CSS selector of the container with scrollbar.'),
     ];
-    $form['parameters']['scrollbarHide'] = [
+    $form['scrollbar_wrapper']['scrollbarHide'] = [
       '#type' => 'checkbox',
       '#description' => $this->t('Hide scrollbar automatically after user interaction.'),
     ];
-    $form['parameters']['scrollbarDraggable'] = [
+    $form['scrollbar_wrapper']['scrollbarDraggable'] = [
       '#type' => 'checkbox',
       '#description' => $this->t('Set to true to enable make scrollbar draggable that allows you to control slider position.'),
     ];
-    $form['parameters']['scrollbarSnapOnRelease'] = [
+    $form['scrollbar_wrapper']['scrollbarSnapOnRelease'] = [
       '#type' => 'checkbox',
       '#description' => $this->t('Set to true to snap slider position to slides when you release scrollbar.'),
     ];
 
     // Accessibility.
-    $form['parameters']['a11y'] = [
+    $form['accessibility'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Accessibility'),
+      '#group' => 'tabs',
+    ];
+    $form['accessibility']['a11y'] = [
       '#type' => 'checkbox',
       '#description' => $this->t('Option to enable keyboard accessibility to provide foucsable navigation buttons and basic ARIA for screen readers.'),
     ];
-    $form['parameters']['prevSlideMessage'] = [
+    $form['accessibility']['prevSlideMessage'] = [
       '#type' => 'textfield',
       '#description' => $this->t('Message for screen readers for previous button.'),
     ];
-    $form['parameters']['nextSlideMessage'] = [
+    $form['accessibility']['nextSlideMessage'] = [
       '#type' => 'textfield',
       '#description' => $this->t('Message for screen readers for next button.'),
     ];
-    $form['parameters']['firstSlideMessage'] = [
+    $form['accessibility']['firstSlideMessage'] = [
       '#type' => 'textfield',
       '#description' => $this->t('Message for screen readers for previous button when swiper is on first slide.'),
     ];
-    $form['parameters']['lastSlideMessage'] = [
+    $form['accessibility']['lastSlideMessage'] = [
       '#type' => 'textfield',
       '#description' => $this->t('Message for screen readers for previous button when swiper is on last slide.'),
     ];
-    $form['parameters']['paginationBulletMessage'] = [
+    $form['accessibility']['paginationBulletMessage'] = [
       '#type' => 'textfield',
       '#description' => $this->t('Message for screen readers for single pagination bullet.'),
     ];
 
     // Keyboard / Mousewheel
-    $form['parameters']['keyboardControl'] = [
+    $form['keyboard'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Keyboard and mouse control'),
+      '#group' => 'tabs',
+    ];
+    $form['keyboard']['keyboardControl'] = [
       '#type' => 'checkbox',
       '#description' => $this->t('Set to true to enable navigation through slides using keyboard right and left (for horizontal mode), top and borrom (for vertical mode) keyboard arrows.'),
     ];
-    $form['parameters']['mousewheelControl'] = [
+    $form['keyboard']['mousewheelControl'] = [
       '#type' => 'checkbox',
       '#description' => $this->t('Set to true to enable navigation through slides using mouse wheel.'),
     ];
-    $form['parameters']['mousewheelForceToAxis'] = [
+    $form['keyboard']['mousewheelForceToAxis'] = [
       '#type' => 'checkbox',
       '#description' => $this->t('Set to true to force mousewheel swipes to axis. So in horizontal mode mousewheel will work only with horizontal mousewheel scrolling, and only with vertical scrolling in vertical mode.'),
     ];
-    $form['parameters']['mousewheelReleaseOnEdges'] = [
+    $form['keyboard']['mousewheelReleaseOnEdges'] = [
       '#type' => 'checkbox',
       '#description' => $this->t('Set to true and swiper will release mousewheel event and allow page scrolling when swiper is on edge positions (in the beginning or in the end).'),
     ];
-    $form['parameters']['mousewheelInvert'] = [
+    $form['keyboard']['mousewheelInvert'] = [
       '#type' => 'checkbox',
       '#description' => $this->t('Set to true to invert sliding direction.'),
     ];
-    $form['parameters']['mousewheelSensitivity'] = [
+    $form['keyboard']['mousewheelSensitivity'] = [
       '#type' => 'number',
       '#min' => 1,
       '#step' => 1,
       '#description' => $this->t('Multiplier of mousewheel data, allows to tweak mouse wheel sensitivity.'),
     ];
 
-    // Hash Navigation
-    $form['parameters']['hashnav'] = [
-      '#type' => 'checkbox',
-      '#description' => $this->t('Set to true to enable hash url navigation to for slides.'),
-    ];
-
     // Images.
-    $form['parameters']['preloadImages'] = [
+    $form['images'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Images'),
+      '#group' => 'tabs',
+    ];
+    $form['images']['preloadImages'] = [
       '#type' => 'checkbox',
       '#description' => $this->t('When enabled Swiper will force to load all images.'),
     ];
-    $form['parameters']['updateOnImagesReady'] = [
+    $form['images']['updateOnImagesReady'] = [
       '#type' => 'checkbox',
       '#description' => $this->t('When enabled Swiper will be reinitialized after all inner images (<img> tags) are loaded. Required preloadImages: true.'),
     ];
-    $form['parameters']['lazyLoading'] = [
+    $form['images']['lazyLoading'] = [
       '#type' => 'checkbox',
       '#description' => $this->t('Set to "true" to enable images lazy loading. Note that preloadImages should be disabled.'),
     ];
-    $form['parameters']['lazyLoadingInPrevNext'] = [
+    $form['images']['lazyLoadingInPrevNext'] = [
       '#type' => 'checkbox',
       '#description' => $this->t('Set to "true" to enable lazy loading for the closest slides images (for previous and next slide images).'),
     ];
-    $form['parameters']['lazyLoadingInPrevNextAmount'] = [
+    $form['images']['lazyLoadingInPrevNextAmount'] = [
       '#type' => 'number',
       '#min' => !empty($swiper_option_set->getParameters()['slidesPerView']) ? $swiper_option_set->getParameters()['slidesPerView'] : 1,
       '#step' => 1,
       '#description' => $this->t("Amount of next/prev slides to preload lazy images in. Can't be less than slidesPerView."),
     ];
-    $form['parameters']['lazyLoadingOnTransitionStart'] = [
+    $form['images']['lazyLoadingOnTransitionStart'] = [
       '#type' => 'checkbox',
       '#description' => $this->t('By default, Swiper will load lazy images after transition to this slide, so you may enable this parameter if you need it to start loading of new image in the beginning of transition.'),
     ];
 
+    $form['loop_control_observer'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Loop, control and observer'),
+      '#group' => 'tabs',
+    ];
     // Loop.
-    $form['parameters']['loop'] = [
+    $form['loop_control_observer']['loop'] = [
       '#type' => 'checkbox',
       '#description' => $this->t('.'),
     ];
-    $form['parameters']['loopAdditionalSlides'] = [
+    $form['loop_control_observer']['loopAdditionalSlides'] = [
       '#type' => 'number',
       '#min' => 0,
       '#step' => 1,
       '#description' => $this->t('Addition number of slides that will be cloned after creating of loop.'),
     ];
-    $form['parameters']['loopedSlides'] = [
+    $form['loop_control_observer']['loopedSlides'] = [
       '#type' => 'number',
       '#min' => 0,
       '#step' => 1,
@@ -559,226 +645,233 @@ class SwiperOptionSetForm extends EntityForm {
     ];
 
     // Controller.
-    // $form['parameters']['control'] = [
+    // $form['loop_control_observer']['control'] = [
     //   '#type' => '[Swiper Instance]',
     //   '#description' => $this->t('Pass here another Swiper instance or array with Swiper instances that should be controlled by this Swiper.'),
     // ];
-    $form['parameters']['controlInverse'] = [
+    $form['loop_control_observer']['controlInverse'] = [
       '#type' => 'checkbox',
       '#description' => $this->t('Set to true and controlling will be in inverse direction.'),
     ];
-    $form['parameters']['controlBy'] = [
+    $form['loop_control_observer']['controlBy'] = [
       '#type' => 'textfield',
       '#description' => $this->t("Can be 'slide' or 'container'. Defines a way how to control another slider: slide by slide (with respect to other slider's grid) or depending on all slides/container (depending on total slider percentage) Observer"),
     ];
 
     // Observer.
-    $form['parameters']['observer'] = [
+    $form['loop_control_observer']['observer'] = [
       '#type' => 'checkbox',
       '#description' => $this->t('Set to true to enable Mutation Observer on Swiper and its elements. In this case Swiper will be updated (reinitialized) each time if you change its style (like hide/show) or modify its child elements (like adding/removing slides).'),
     ];
-    $form['parameters']['observeParents'] = [
+    $form['loop_control_observer']['observeParents'] = [
       '#type' => 'checkbox',
       '#description' => $this->t('Set to true if you also need to watch Mutations for Swiper parent elements.'),
     ];
 
-    // Breakpoints
-    $form['parameters']['breakpoints'] = [
-      '#type' => 'textarea',
-      '#description' => $this->t("	Allows to set different parameter for different responsive breakpoints (screen sizes). Not all parameters can be changed in breakpoints, only those which are not required different layout and logic, like slidesPerView, slidesPerGroup, spaceBetween. Such parameters like slidesPerColumn, loop, direction, effect won't work. "),
-    ];
-
     // Callbacks.
-    $form['parameters']['runCallbacksOnInit'] = [
+    $form['callbacks'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Callbacks'),
+      '#group' => 'tabs',
+    ];
+    $form['callbacks']['runCallbacksOnInit'] = [
       '#type' => 'checkbox',
       '#description' => $this->t('Run on[Transition/SlideChange][Start/End] callbacks on swiper initialization. Such callbacks will be fired on initialization in case of your initialSlide is not 0, or you use loop mode.'),
     ];
-    $form['parameters']['onInit'] = [
+    $form['callbacks']['onInit'] = [
       '#type' => 'textarea',
       '#description' => $this->t('Callback function with arguments, swiper, will be executed right after Swiper initialization'),
     ];
-    $form['parameters']['onSlideChangeStart'] = [
+    $form['callbacks']['onSlideChangeStart'] = [
       '#type' => 'textarea',
       '#description' => $this->t('Callback function with arguments, swiper, will be executed in the beginning of animation to other slide (next or previous). Receives swiper instance as an argument.'),
     ];
-    $form['parameters']['onSlideChangeEnd'] = [
+    $form['callbacks']['onSlideChangeEnd'] = [
       '#type' => 'textarea',
       '#description' => $this->t('Callback function with arguments, swiper, will be executed after animation to other slide (next or previous). Receives slider instance as an argument.'),
     ];
-    $form['parameters']['onSlideNextStart'] = [
+    $form['callbacks']['onSlideNextStart'] = [
       '#type' => 'textarea',
       '#description' => $this->t('Same as "onSlideChangeStart" but for "forward" direction only.'),
     ];
-    $form['parameters']['onSlideNextStart'] = [
+    $form['callbacks']['onSlideNextStart'] = [
       '#type' => 'textarea',
       '#description' => $this->t('Same as "onSlideChangeEnd" but for "forward" direction only.'),
     ];
-    $form['parameters']['onSlidePrevStart'] = [
+    $form['callbacks']['onSlidePrevStart'] = [
       '#type' => 'textarea',
       '#description' => $this->t('Same as "onSlideChangeStart" but for "backward" direction only.'),
     ];
-    $form['parameters']['onSlidePrevEnd'] = [
+    $form['callbacks']['onSlidePrevEnd'] = [
       '#type' => 'textarea',
       '#description' => $this->t('Same as "onSlideChangeEnd" but for "backward" direction only.'),
     ];
-    $form['parameters']['onTransitionStart'] = [
+    $form['callbacks']['onTransitionStart'] = [
       '#type' => 'textarea',
       '#description' => $this->t('Callback function with arguments, swiper, will be executed in the beginning of transition. Receives swiper instance as an argument.'),
     ];
-    $form['parameters']['onTransitionEnd'] = [
+    $form['callbacks']['onTransitionEnd'] = [
       '#type' => 'textarea',
       '#description' => $this->t('Callback function with arguments, swiper, will be executed after transition. Receives slider instance as an argument.'),
     ];
-    $form['parameters']['onTouchStart'] = [
+    $form['callbacks']['onTouchStart'] = [
       '#type' => 'textarea',
       '#description' => $this->t("Callback function with arguments, swiper, event, will be executed when user touch Swiper. Receives swiper instance and 'touchstart' event as an arguments."),
     ];
-    $form['parameters']['onTouchMove'] = [
+    $form['callbacks']['onTouchMove'] = [
       '#type' => 'textarea',
       '#description' => $this->t("Callback function with arguments, swiper, event, will be executed when user touch and move finger over Swiper. Receives swiper instance and 'touchmove' event as an arguments."),
     ];
-    $form['parameters']['onTouchMoveOpposite'] = [
+    $form['callbacks']['onTouchMoveOpposite'] = [
       '#type' => 'textarea',
       '#description' => $this->t("Callback function with arguments, swiper, event, will be executed when user touch and move finger over Swiper in direction opposite to direction parameter. Receives swiper instance and 'touchmove' event as an arguments."),
     ];
-    $form['parameters']['onSliderMove'] = [
+    $form['callbacks']['onSliderMove'] = [
       '#type' => 'textarea',
       '#description' => $this->t("Callback function with arguments, swiper, event, will be executed when user touch and move finger over Swiper and move it. Receives swiper instance and 'touchmove' event as an arguments."),
     ];
-    $form['parameters']['onTouchEnd'] = [
+    $form['callbacks']['onTouchEnd'] = [
       '#type' => 'textarea',
       '#description' => $this->t("Callback function with arguments, swiper, event, will be executed when user release Swiper. Receives swiper instance and 'touchend' event as an arguments."),
     ];
-    $form['parameters']['onClick'] = [
+    $form['callbacks']['onClick'] = [
       '#type' => 'textarea',
       '#description' => $this->t("Callback function with arguments, swiper, event, will be executed when user click/tap on Swiper after 300ms delay. Receives swiper instance and 'touchend' event as an arguments."),
     ];
-    $form['parameters']['onTap'] = [
+    $form['callbacks']['onTap'] = [
       '#type' => 'textarea',
       '#description' => $this->t("Callback function with arguments, swiper, event, will be executed when user click/tap on Swiper. Receives swiper instance and 'touchend' event as an arguments."),
     ];
-    $form['parameters']['onDoubleTap'] = [
+    $form['callbacks']['onDoubleTap'] = [
       '#type' => 'textarea',
       '#description' => $this->t("Callback function with arguments, swiper, event, will be executed when user double tap on Swiper's container. Receives swiper instance and 'touchend' event as an arguments"),
     ];
-    $form['parameters']['onImagesReady'] = [
+    $form['callbacks']['onImagesReady'] = [
       '#type' => 'textarea',
       '#description' => $this->t('Callback function with arguments, swiper, will be executed right after all inner images are loaded. updateOnImagesReady should be also enabled'),
     ];
-    $form['parameters']['onProgress'] = [
+    $form['callbacks']['onProgress'] = [
       '#type' => 'textarea',
       '#description' => $this->t('Callback function with arguments, swiper, progress, will be executed when Swiper progress is changed, as second arguments it receives progress that is always from 0 to 1'),
     ];
-    $form['parameters']['onReachBeginning'] = [
+    $form['callbacks']['onReachBeginning'] = [
       '#type' => 'textarea',
       '#description' => $this->t('Callback function with arguments, swiper, will be executed when Swiper reach its beginning (initial position)'),
     ];
-    $form['parameters']['onReachEnd'] = [
+    $form['callbacks']['onReachEnd'] = [
       '#type' => 'textarea',
       '#description' => $this->t('Callback function with arguments, swiper, will be executed when Swiper reach last slide'),
     ];
-    $form['parameters']['onDestroy'] = [
+    $form['callbacks']['onDestroy'] = [
       '#type' => 'textarea',
       '#description' => $this->t('Callback function with arguments, swiper, will be executed when you destroy Swiper'),
     ];
-    $form['parameters']['onSetTranslate'] = [
+    $form['callbacks']['onSetTranslate'] = [
       '#type' => 'textarea',
       '#description' => $this->t("Callback function with arguments, swiper, translate, will be executed when swiper's wrapper change its position. Receives swiper instance and current translate value as an arguments"),
     ];
-    $form['parameters']['onSetTransition'] = [
+    $form['callbacks']['onSetTransition'] = [
       '#type' => 'textarea',
       '#description' => $this->t('Callback function with arguments, swiper, transition, will be executed everytime when swiper starts animation. Receives swiper instance and current transition duration (in ms) as an arguments'),
     ];
-    $form['parameters']['onAutoplay'] = [
+    $form['callbacks']['onAutoplay'] = [
       '#type' => 'textarea',
       '#description' => $this->t('Same as onSlideChangeStart but caused by autoplay.'),
     ];
-    $form['parameters']['onAutoplayStart'] = [
+    $form['callbacks']['onAutoplayStart'] = [
       '#type' => 'textarea',
       '#description' => $this->t('Callback function with arguments, swiper, will be executed when when autoplay started'),
     ];
-    $form['parameters']['onAutoplayStop'] = [
+    $form['callbacks']['onAutoplayStop'] = [
       '#type' => 'textarea',
       '#description' => $this->t('Callback function with arguments, swiper, will be executed when when autoplay stopped'),
     ];
-    $form['parameters']['onLazyImageLoad'] = [
+    $form['callbacks']['onLazyImageLoad'] = [
       '#type' => 'textarea',
       '#description' => $this->t('Callback function with arguments, swiper, slide, image, will be executed in the beginning of lazy loading of image'),
     ];
-    $form['parameters']['onLazyImageReady'] = [
+    $form['callbacks']['onLazyImageReady'] = [
       '#type' => 'textarea',
       '#description' => $this->t('Callback function with arguments, swiper, slide, image, will be executed when lazy loading image will be loaded'),
     ];
-    $form['parameters']['onPaginationRendered'] = [
+    $form['callbacks']['onPaginationRendered'] = [
       '#type' => 'textarea',
       '#description' => $this->t('Callback function, will be executed after pagination elements generated and added to DOM.'),
     ];
 
     // Namespace.
-    $form['parameters']['slideClass'] = [
+    $form['namespace'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Namespace'),
+      '#group' => 'tabs',
+    ];
+    $form['namespace']['slideClass'] = [
       '#type' => 'textfield',
       '#description' => $this->t('CSS class name of slide.'),
     ];
-    $form['parameters']['slideActiveClass'] = [
+    $form['namespace']['slideActiveClass'] = [
       '#type' => 'textfield',
       '#description' => $this->t('CSS class name of currently active slide.'),
     ];
-    $form['parameters']['slideVisibleClass'] = [
+    $form['namespace']['slideVisibleClass'] = [
       '#type' => 'textfield',
       '#description' => $this->t('CSS class name of currently visible slide.'),
     ];
-    $form['parameters']['slideDuplicateClass'] = [
+    $form['namespace']['slideDuplicateClass'] = [
       '#type' => 'textfield',
       '#description' => $this->t('CSS class name of slide duplicated by loop mode.'),
     ];
-    $form['parameters']['slideNextClass'] = [
+    $form['namespace']['slideNextClass'] = [
       '#type' => 'textfield',
       '#description' => $this->t('CSS class name of slide which is right after currently active slide.'),
     ];
-    $form['parameters']['slidePrevClass'] = [
+    $form['namespace']['slidePrevClass'] = [
       '#type' => 'textfield',
       '#description' => $this->t('CSS class name of slide which is right before currently active slide.'),
     ];
-    $form['parameters']['wrapperClass'] = [
+    $form['namespace']['wrapperClass'] = [
       '#type' => 'textfield',
       '#description' => $this->t("CSS class name of slides' wrapper."),
     ];
-    $form['parameters']['bulletClass'] = [
+    $form['namespace']['bulletClass'] = [
       '#type' => 'textfield',
       '#description' => $this->t('CSS class name of single pagination bullet.'),
     ];
-    $form['parameters']['bulletActiveClass'] = [
+    $form['namespace']['bulletActiveClass'] = [
       '#type' => 'textfield',
       '#description' => $this->t('CSS class name of currently active pagination bullet.'),
     ];
-    $form['parameters']['paginationHiddenClass'] = [
+    $form['namespace']['paginationHiddenClass'] = [
       '#type' => 'textfield',
       '#description' => $this->t('CSS class name of pagination when it becomes inactive.'),
     ];
-    $form['parameters']['paginationCurrentClass'] = [
+    $form['namespace']['paginationCurrentClass'] = [
       '#type' => 'textfield',
       '#description' => $this->t('CSS class name of the element with currently active index in "fraction" pagination.'),
     ];
-    $form['parameters']['paginationTotalClass'] = [
+    $form['namespace']['paginationTotalClass'] = [
       '#type' => 'textfield',
       '#description' => $this->t('CSS class name of the element with total number of "snaps" in "fraction" pagination.'),
     ];
-    $form['parameters']['paginationProgressbarClass'] = [
+    $form['namespace']['paginationProgressbarClass'] = [
       '#type' => 'textfield',
       '#description' => $this->t('CSS class name of pagination progressbar.'),
     ];
-    $form['parameters']['buttonDisabledClass'] = [
+    $form['namespace']['buttonDisabledClass'] = [
       '#type' => 'textfield',
       '#description' => $this->t('CSS class name of next/prev button when it becomes disabled.'),
     ];
 
     // Set defaults and add titles for the fields.
-    $options = $this->getSwiperDefaults();
-    foreach (array_keys($options) as $key) {
-      $title = ucfirst(strtolower(preg_replace('/([A-Z])/', ' $1', $key)));
-      $default = !empty($swiper_option_set->getParameters()[$key]) ? $swiper_option_set->getParameters()[$key] : $options[$key];
-      $form['parameters'][$key]['#title'] = $title;
-      $form['parameters'][$key]['#default_value'] = $default;
+    $defaults = $this->getSwiperDefaults();
+    foreach ($defaults as $group => $options) {
+      foreach (array_keys($options) as $key) {
+        $title = ucfirst(strtolower(preg_replace('/([A-Z])/', ' $1', $key)));
+        $default = !empty($swiper_option_set->getParameters()[$key]) ? $swiper_option_set->getParameters()[$key] : $options[$key];
+        $form[$group][$key]['#title'] = $title;
+        $form[$group][$key]['#default_value'] = $default;
+        $form[$group][$key]['#parents'] = ['parameters', $key];
+      }
     }
 
     return $form;
@@ -831,179 +924,208 @@ class SwiperOptionSetForm extends EntityForm {
   protected function getSwiperDefaults() {
     // @todo make defaults configurable using simple config.
     return [
-      'initialSlide' => 0,
-      'direction' => 'horizontal',
-      'speed' => 300,
-      'setWrapperSize' => FALSE,
-      'virtualTranslate' => FALSE,
-      'width' => '',
-      'height' => '',
-      'autoHeight' => FALSE,
-      'roundLengths' => FALSE,
-      'nested' => FALSE,
+      'common' => [
+        'initialSlide' => 0,
+        'direction' => 'horizontal',
+        'speed' => 300,
+        'setWrapperSize' => FALSE,
+        'virtualTranslate' => FALSE,
+        'width' => '',
+        'height' => '',
+        'autoHeight' => FALSE,
+        'roundLengths' => FALSE,
+        'nested' => FALSE,
+        'parallax' => FALSE,
+        'grabCursor' => FALSE,
+        'nextButton' => '.swiper-button-next',
+        'prevButton' => '.swiper-button-prev',
+        'hashnav' => FALSE,
+        'breakpoints' => '',
+      ],
       // Autoplay.
-      'autoplay' => 1000,
-      'autoplayStopOnLast' => FALSE,
-      'autoplayDisableOnInteraction' => TRUE,
+      'autoplay_wrapper' => [
+        'autoplay' => 0,
+        'autoplayStopOnLast' => FALSE,
+        'autoplayDisableOnInteraction' => TRUE,
+      ],
       // Progress.
-      'watchSlidesProgress' => FALSE,
-      'watchSlidesVisibility' => FALSE,
+      'progress' => [
+        'watchSlidesProgress' => FALSE,
+        'watchSlidesVisibility' => FALSE,
+      ],
       // Freemode.
-      'freeMode' => FALSE,
-      'freeModeMomentum' => TRUE,
-      'freeModeMomentumRatio' => 1,
-      'freeModeMomentumBounce' => TRUE,
-      'freeModeMomentumBounceRatio' => 1,
-      'freeModeMinimumVelocity' => 0.02,
-      'freeModeSticky' => FALSE,
+      'freemode' => [
+        'freeMode' => FALSE,
+        'freeModeMomentum' => TRUE,
+        'freeModeMomentumRatio' => 1,
+        'freeModeMomentumBounce' => TRUE,
+        'freeModeMomentumBounceRatio' => 1,
+        'freeModeMinimumVelocity' => 0.02,
+        'freeModeSticky' => FALSE,
+      ],
       // Effects.
-      'effect' => 'slide',
-      'fade' => '',
-      'cube' => '',
-      'coverflow' => '',
-      'flip' => '',
-      // Parallax.
-      'parallax' => FALSE,
+      'effect_wrapper' => [
+        'effect' => 'slide',
+        'fade' => '',
+        'cube' => '',
+        'coverflow' => '',
+        'flip' => '',
+      ],
       // Slides grid.
-      'spaceBetween' => 0,
-      'slidesPerView' => 1,
-      'slidesPerColumn' => 1,
-      'slidesPerColumnFill' => 'column',
-      'slidesPerGroup' => 1,
-      'centeredSlides' => FALSE,
-      'slidesOffsetBefore' => 0,
-      'slidesOffsetAfter' => 0,
-      // Grab cursor.
-      'grabCursor' => FALSE,
+      'slides_grid' => [
+        'spaceBetween' => 0,
+        'slidesPerView' => 1,
+        'slidesPerColumn' => 1,
+        'slidesPerColumnFill' => 'column',
+        'slidesPerGroup' => 1,
+        'centeredSlides' => FALSE,
+        'slidesOffsetBefore' => 0,
+        'slidesOffsetAfter' => 0,
+      ],
       // Touches.
-      'touchEventsTarget' => 'container',
-      'touchRatio' => 1,
-      'touchAngle' => 45,
-      'simulateTouch' => TRUE,
-      'shortSwipes' => TRUE,
-      'longSwipes' => TRUE,
-      'longSwipesRatio' => 0.5,
-      'longSwipesMs' => 300,
-      'followFinger' => TRUE,
-      'onlyExternal' => FALSE,
-      'threshold' => 0,
-      'touchMoveStopPropagation' => TRUE,
-      'iOSEdgeSwipeDetection' => FALSE,
-      'iOSEdgeSwipeThreshold' => 20,
-      // Touch resistance.
-      'resistance' => TRUE,
-      'resistanceRatio' => 0.85,
-      // Clicks
-      'preventClicks' => TRUE,
-      'preventClicksPropagation' => TRUE,
-      'slideToClickedSlide' => FALSE,
+      'touches' => [
+        'touchEventsTarget' => 'container',
+        'touchRatio' => 1,
+        'touchAngle' => 45,
+        'simulateTouch' => TRUE,
+        'shortSwipes' => TRUE,
+        'longSwipes' => TRUE,
+        'longSwipesRatio' => 0.5,
+        'longSwipesMs' => 300,
+        'followFinger' => TRUE,
+        'onlyExternal' => FALSE,
+        'threshold' => 0,
+        'touchMoveStopPropagation' => TRUE,
+        'iOSEdgeSwipeDetection' => FALSE,
+        'iOSEdgeSwipeThreshold' => 20,
+      ],
+      'resistance_clicks' => [
+        // Touch resistance.
+        'resistance' => TRUE,
+        'resistanceRatio' => 0.85,
+        // Clicks
+        'preventClicks' => TRUE,
+        'preventClicksPropagation' => TRUE,
+        'slideToClickedSlide' => FALSE,
+      ],
       // Swiping / no swiping.
-      'allowSwipeToPrev' => TRUE,
-      'allowSwipeToNext' => TRUE,
-      'noSwiping' => TRUE,
-      'noSwipingClass' => 'swiper-no-swiping',
-      'swipeHandler' => NULL,
+      'swiping' => [
+        'allowSwipeToPrev' => TRUE,
+        'allowSwipeToNext' => TRUE,
+        'noSwiping' => TRUE,
+        'noSwipingClass' => 'swiper-no-swiping',
+        'swipeHandler' => NULL,
+      ],
       // Pagination.
-      'pagination' => '.swiper-pagination',
-      'paginationType' => 'bullets',
-      'paginationHide' => TRUE,
-      'paginationClickable' => FALSE,
-      'paginationElement' => 'span',
-      'paginationBulletRender' => NULL,
-      'paginationFractionRender' => NULL,
-      'paginationProgressRender' => NULL,
-      'paginationCustomRender' => NULL,
-      // Navigation Buttons.
-      'nextButton' => '.swiper-button-next',
-      'prevButton' => '.swiper-button-prev',
+      'pagination_wrapper' => [
+        'pagination' => '.swiper-pagination',
+        'paginationType' => 'bullets',
+        'paginationHide' => TRUE,
+        'paginationClickable' => FALSE,
+        'paginationElement' => 'span',
+        'paginationBulletRender' => NULL,
+        'paginationFractionRender' => NULL,
+        'paginationProgressRender' => NULL,
+        'paginationCustomRender' => NULL,
+      ],
       // Scrollbar.
-      'scrollbar' => '.swiper-scrollbar',
-      'scrollbarHide' => TRUE,
-      'scrollbarDraggable' =>	FALSE,
-      'scrollbarSnapOnRelease' => FALSE,
+      'scrollbar_wrapper' => [
+        'scrollbar' => '.swiper-scrollbar',
+        'scrollbarHide' => TRUE,
+        'scrollbarDraggable' =>	FALSE,
+        'scrollbarSnapOnRelease' => FALSE,
+      ],
       // Accessibility.
-      'a11y' => FALSE,
-      'prevSlideMessage' => $this->t('Previous slide'),
-      'nextSlideMessage' => $this->t('Next slide'),
-      'firstSlideMessage' => $this->t('This is the first slide'),
-      'lastSlideMessage' => $this->t('This is the last slide'),
-      'paginationBulletMessage' => $this->t(	'Go to slide {{index}}'),
+      'accessibility' => [
+        'a11y' => FALSE,
+        'prevSlideMessage' => $this->t('Previous slide'),
+        'nextSlideMessage' => $this->t('Next slide'),
+        'firstSlideMessage' => $this->t('This is the first slide'),
+        'lastSlideMessage' => $this->t('This is the last slide'),
+        'paginationBulletMessage' => $this->t(	'Go to slide {{index}}'),
+      ],
       // Keyboard / mousewheel.
-      'keyboardControl' => FALSE,
-      'mousewheelControl' => FALSE,
-      'mousewheelForceToAxis' => FALSE,
-      'mousewheelReleaseOnEdges' => FALSE,
-      'mousewheelInvert' => FALSE,
-      'mousewheelSensitivity' => 1,
-      // Hash navigation.
-      'hashnav' => FALSE,
+      'keyboard' => [
+        'keyboardControl' => FALSE,
+        'mousewheelControl' => FALSE,
+        'mousewheelForceToAxis' => FALSE,
+        'mousewheelReleaseOnEdges' => FALSE,
+        'mousewheelInvert' => FALSE,
+        'mousewheelSensitivity' => 1,
+      ],
       // Images
-      'preloadImages' => TRUE,
-      'updateOnImagesReady' => TRUE,
-      'lazyLoading' => FALSE,
-      'lazyLoadingInPrevNext' => FALSE,
-      'lazyLoadingInPrevNextAmount' => 1,
-      'lazyLoadingOnTransitionStart' => FALSE,
-      // Loop.
-      'loop' => FALSE,
-      'loopAdditionalSlides' => 0,
-      'loopedSlides' => NULL,
-      // Control
-      //'control' => '', // Named reference to Swiper instances
-      'controlInverse' => FALSE,
-      'controlBy' => 'slide',
-      // Observer.
-      'observer' => FALSE,
-      'observeParents' => FALSE,
-      // Breakpoints.
-      'breakpoints' => '',
+      'images' => [
+        'preloadImages' => TRUE,
+        'updateOnImagesReady' => TRUE,
+        'lazyLoading' => FALSE,
+        'lazyLoadingInPrevNext' => FALSE,
+        'lazyLoadingInPrevNextAmount' => 1,
+        'lazyLoadingOnTransitionStart' => FALSE,
+      ],
+      'loop_control_observer' => [
+        // Loop.
+        'loop' => FALSE,
+        'loopAdditionalSlides' => 0,
+        'loopedSlides' => NULL,
+        // Control
+        //'control' => '', // Named reference to Swiper instances
+        'controlInverse' => FALSE,
+        'controlBy' => 'slide',
+        // Observer.
+        'observer' => FALSE,
+        'observeParents' => FALSE,
+      ],
       // Callbacks.
-      'runCallbacksOnInit' => TRUE,
-      'onInit' => '',
-      'onSlideChangeStart' => '',
-      'onSlideChangeEnd' => '',
-      'onSlideNextStart' => '',
-      'onSlideNextEnd' => '',
-      'onSlidePrevStart' => '',
-      'onSlidePrevEnd' => '',
-      'onTransitionStart' => '',
-      'onTransitionEnd' => '',
-      'onTouchStart' => '',
-      'onTouchMove' => '',
-      'onTouchMoveOpposite' => '',
-      'onSliderMove' => '',
-      'onTouchEnd' => '',
-      'onClick' => '',
-      'onTap' => '',
-      'onDoubleTap' => '',
-      'onImagesReady' => '',
-      'onProgress' => '',
-      'onReachBeginning' => '',
-      'onReachEnd' => '',
-      'onDestroy' => '',
-      'onSetTranslate' => '',
-      'onSetTransition' => '',
-      'onAutoplay' => '',
-      'onAutoplayStart' => '',
-      'onAutoplayStop' => '',
-      'onLazyImageLoad' => '',
-      'onLazyImageReady' => '',
-      'onPaginationRendered' => '',
+      'callbacks' => [
+        'runCallbacksOnInit' => TRUE,
+        'onInit' => '',
+        'onSlideChangeStart' => '',
+        'onSlideChangeEnd' => '',
+        'onSlideNextStart' => '',
+        'onSlideNextEnd' => '',
+        'onSlidePrevStart' => '',
+        'onSlidePrevEnd' => '',
+        'onTransitionStart' => '',
+        'onTransitionEnd' => '',
+        'onTouchStart' => '',
+        'onTouchMove' => '',
+        'onTouchMoveOpposite' => '',
+        'onSliderMove' => '',
+        'onTouchEnd' => '',
+        'onClick' => '',
+        'onTap' => '',
+        'onDoubleTap' => '',
+        'onImagesReady' => '',
+        'onProgress' => '',
+        'onReachBeginning' => '',
+        'onReachEnd' => '',
+        'onDestroy' => '',
+        'onSetTranslate' => '',
+        'onSetTransition' => '',
+        'onAutoplay' => '',
+        'onAutoplayStart' => '',
+        'onAutoplayStop' => '',
+        'onLazyImageLoad' => '',
+        'onLazyImageReady' => '',
+        'onPaginationRendered' => '',
+      ],
       // Namespace.
-      'slideClass' => 'swiper-slide',
-      'slideActiveClass' => 'swiper-slide-active',
-      'slideVisibleClass' => 'swiper-slide-visible',
-      'slideDuplicateClass' => 'swiper-slide-duplicate',
-      'slideNextClass' => 'swiper-slide-next',
-      'slidePrevClass' => 'swiper-slide-prev',
-      'wrapperClass' => 'swiper-wrapper',
-      'bulletClass' => 'swiper-pagination-bullet',
-      'bulletActiveClass' => 'swiper-pagination-bullet-active',
-      'paginationHiddenClass' => 'swiper-pagination-hidden',
-      'paginationCurrentClass' =>'swiper-pagination-current',
-      'paginationTotalClass' =>'swiper-pagination-total',
-      'paginationProgressbarClass' => 'swiper-pagination-progressbar',
-      'buttonDisabledClass' => 'swiper-button-disabled',
+      'namespace' => [
+        'slideClass' => 'swiper-slide',
+        'slideActiveClass' => 'swiper-slide-active',
+        'slideVisibleClass' => 'swiper-slide-visible',
+        'slideDuplicateClass' => 'swiper-slide-duplicate',
+        'slideNextClass' => 'swiper-slide-next',
+        'slidePrevClass' => 'swiper-slide-prev',
+        'wrapperClass' => 'swiper-wrapper',
+        'bulletClass' => 'swiper-pagination-bullet',
+        'bulletActiveClass' => 'swiper-pagination-bullet-active',
+        'paginationHiddenClass' => 'swiper-pagination-hidden',
+        'paginationCurrentClass' =>'swiper-pagination-current',
+        'paginationTotalClass' =>'swiper-pagination-total',
+        'paginationProgressbarClass' => 'swiper-pagination-progressbar',
+        'buttonDisabledClass' => 'swiper-button-disabled',
+      ],
     ];
   }
 
