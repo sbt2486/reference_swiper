@@ -5,6 +5,8 @@
  * Formats multi value fields as Swiper sliders.
  */
 
+use Drupal\Core\Template\Attribute;
+
 function field_swiper_theme($existing, $type, $theme, $path) {
   return [
     'swiper_container' => ['render element' => 'element']
@@ -41,8 +43,18 @@ function template_preprocess_swiper_container(&$variables) {
 
   // Check for controls and add variables for them necessary.
   $parameters = $element['#swiper_parameters'];
-  $variables['pager'] = !empty($parameters['pagination']);
-  $variables['next_button'] = !empty($parameters['nextButton']);
-  $variables['prev_button'] = !empty($parameters['prevButton']);
-  $variables['scrollbar'] = !empty($parameters['scrollbar']);
+  $controls = [
+    'pagination' => 'pagination',
+    'next_button' => 'nextButton',
+    'prev_button' => 'prevButton',
+    'scrollbar' => 'scrollbar',
+  ];
+  foreach ($controls as $control => $param_key) {
+    if (!empty($parameters[$param_key])) {
+      $variables['controls'][$control]['attributes'] = new Attribute([
+        // Replace the dot in the CSS selector string of the control.
+        'class' => [str_replace('.', '', $parameters[$param_key])]
+      ]);
+    }
+  }
 }

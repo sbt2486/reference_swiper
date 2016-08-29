@@ -26,16 +26,9 @@
 %}
 <div{{ attributes.addClass(classes) }}>
   {{ children }}
-  {% if pager %}
-    <div class="swiper-pagination"></div>
-  {% endif %}
-  {% if prev_button %}
-    <div class="swiper-button-prev"></div>
-  {% endif %}
-  {% if next_button %}
-    <div class="swiper-button-next"></div>
-  {% endif %}
-  {% if scrollbar %}
-    <div class="swiper-scrollbar"></div>
-  {% endif %}
+  {% for control in controls %}
+    {% if control %}
+      <div {{ control.attributes }}></div>
+    {% endif %}
+  {% endfor %}
 </div>
