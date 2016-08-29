@@ -134,10 +134,15 @@ class SwiperFormatter extends EntityReferenceEntityFormatter implements Containe
 
     // Check whether any option sets are available.
     if (SwiperOptionSet::loadMultiple()) {
-      $summary[] = t(
-      'Swiper option set: @option_set',
-      ['@option_set' => SwiperOptionSet::load($this->getSetting('swiper_option_set'))->label()]
-    );
+      if ($this->getSetting('swiper_option_set')) {
+        $summary[] = t(
+          'Swiper option set: @option_set',
+          ['@option_set' => SwiperOptionSet::load($this->getSetting('swiper_option_set'))->label()]
+        );
+      }
+      else {
+        $summary[] = t('No Swiper option set selected');
+      }
     }
     else {
       $summary[] = $this->getNoOptionSetsAvailableInfo();
@@ -185,7 +190,7 @@ class SwiperFormatter extends EntityReferenceEntityFormatter implements Containe
           'drupalSettings' => [
             'fieldSwiper' => [
               'parameters' => [
-                $parameter_key => $swiper_option_set->getParameters()
+                $parameter_key => $swiper_option_set->getParameters(),
               ]
             ],
           ],
