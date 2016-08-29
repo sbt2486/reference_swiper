@@ -946,8 +946,8 @@ class SwiperOptionSetForm extends EntityForm {
         'nested' => FALSE,
         'parallax' => FALSE,
         'grabCursor' => FALSE,
-        'nextButton' => '.swiper-button-next',
-        'prevButton' => '.swiper-button-prev',
+        'nextButton' => '',
+        'prevButton' => '',
         'hashnav' => FALSE,
         'breakpoints' => '',
       ],
@@ -1027,7 +1027,7 @@ class SwiperOptionSetForm extends EntityForm {
       ],
       // Pagination.
       'pagination_wrapper' => [
-        'pagination' => '.swiper-pagination',
+        'pagination' => '',
         'paginationType' => 'bullets',
         'paginationHide' => TRUE,
         'paginationClickable' => FALSE,
@@ -1039,7 +1039,7 @@ class SwiperOptionSetForm extends EntityForm {
       ],
       // Scrollbar.
       'scrollbar_wrapper' => [
-        'scrollbar' => '.swiper-scrollbar',
+        'scrollbar' => '',
         'scrollbarHide' => TRUE,
         'scrollbarDraggable' =>	FALSE,
         'scrollbarSnapOnRelease' => FALSE,
