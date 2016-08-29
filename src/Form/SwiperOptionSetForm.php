@@ -7,7 +7,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Entity\Query\QueryFactory;
 use Drupal\Core\Form\FormStateInterface;
 
-// @todo create sections using details elements according to http://idangero.us/swiper/api
 class SwiperOptionSetForm extends EntityForm {
 
   /**
@@ -32,7 +31,7 @@ class SwiperOptionSetForm extends EntityForm {
    */
   public function form(array $form, FormStateInterface $form_state) {
     $form = parent::form($form, $form_state);
-    /** @var \Drupal\field_swiper\SwiperOptionSetInterface */
+    /** @var $swiper_option_set \Drupal\field_swiper\SwiperOptionSetInterface */
     $swiper_option_set = $this->entity;
 
     $form['label'] = [
@@ -327,7 +326,11 @@ class SwiperOptionSetForm extends EntityForm {
       '#group' => 'tabs',
     ];
     $form['touches']['touchEventsTarget'] = [
-      '#type' => 'textfield',
+      '#type' => 'select',
+      '#options' => [
+        'container' => $this->t('Container'),
+        'wrapper' => $this->t('Wrapper'),
+      ],
       '#description' => $this->t('	Target element to listen touch events on. Can be "container" (to listen for touch events on swiper-container) or "wrapper" (to listen for touch events on swiper-wrapper).'),
     ];
     $form['touches']['touchRatio'] = [
@@ -629,7 +632,7 @@ class SwiperOptionSetForm extends EntityForm {
     // Loop.
     $form['loop_control_observer']['loop'] = [
       '#type' => 'checkbox',
-      '#description' => $this->t('.'),
+      '#description' => $this->t('Set to true to enable continuous loop mode.'),
     ];
     $form['loop_control_observer']['loopAdditionalSlides'] = [
       '#type' => 'number',
@@ -881,7 +884,7 @@ class SwiperOptionSetForm extends EntityForm {
    * {@inheritdoc}
    */
   public function save(array $form, FormStateInterface $form_state) {
-    /** @var \Drupal\field_swiper\SwiperOptionSetInterface */
+    /** @var $swiper_option_set \Drupal\field_swiper\SwiperOptionSetInterface */
     $swiper_option_set = $this->entity;
 
     // Clear parameters before setting them in order to prevent setting of
