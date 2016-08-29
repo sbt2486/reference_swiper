@@ -29,4 +29,12 @@ interface SwiperOptionSetInterface extends ConfigEntityInterface {
    */
   public function setParameters(array $values);
 
+  /**
+   * Resets the Swiper parameters on the option set to an empty array.
+   *
+   * @return \Drupal\field_swiper\SwiperOptionSetInterface
+   *   The swiper option set config entity.
+   */
+  public function clearParameters();
+
 }

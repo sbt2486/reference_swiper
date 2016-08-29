@@ -883,7 +883,13 @@ class SwiperOptionSetForm extends EntityForm {
   public function save(array $form, FormStateInterface $form_state) {
     /** @var \Drupal\field_swiper\SwiperOptionSetInterface */
     $swiper_option_set = $this->entity;
-    $status = $swiper_option_set->save();
+
+    // Clear parameters before setting them in order to prevent setting of
+    // disabled parameters like for example width or height.
+    $status = $swiper_option_set
+      ->clearParameters()
+      ->setParameters(array_filter($form_state->getValues()['parameters']))
+      ->save();
 
     if ($status) {
       drupal_set_message($this->t('Saved the %label Swiper option set.', array(

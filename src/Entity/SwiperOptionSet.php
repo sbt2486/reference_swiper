@@ -76,4 +76,13 @@ class SwiperOptionSet extends ConfigEntityBase implements SwiperOptionSetInterfa
     }
     return $this;
   }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function clearParameters() {
+    $this->parameters = [];
+    return $this;
+  }
+
 }
