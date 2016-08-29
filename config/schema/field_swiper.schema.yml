@@ -82,18 +82,18 @@ field_swiper.swiper_option_set.*:
         effect:
           type: string
           label: 'effect'
-#        fade:
-#          type: string
-#          label: 'fade'
-#        cube:
-#          type: string
-#          label: 'cube'
-#        coverflow:
-#          type: string
-#          label: 'coverflow'
-#        flip:
-#          type: string
-#          label: 'flip'
+        fade:
+          type: string
+          label: 'fade'
+        cube:
+          type: string
+          label: 'cube'
+        coverflow:
+          type: string
+          label: 'coverflow'
+        flip:
+          type: string
+          label: 'flip'
         parallax:
           type: boolean
           label: 'parallax'
