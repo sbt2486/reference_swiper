@@ -16,7 +16,6 @@
       var swiperInstances = {};
       $('.swiper-container').once('field-swiper').each(function (index) {
         var parameterKey = $(this).data('swiper-param-key');
-        console.log(drupalSettings.fieldSwiper.parameters[parameterKey]);
         swiperInstances[parameterKey] = new Swiper(
           $(this)[0],
           drupalSettings.fieldSwiper.parameters[parameterKey]
