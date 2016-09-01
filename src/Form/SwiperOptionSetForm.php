@@ -889,10 +889,16 @@ class SwiperOptionSetForm extends EntityForm {
     $swiper_option_set = $this->entity;
 
     // Clear parameters before setting them in order to prevent setting of
-    // disabled parameters like for example width or height.
+    // disabled parameters like width or height.
+    $parameters = $form_state->getValues()['parameters'];
+    foreach (['width', 'height'] as $parameter_key) {
+      if ($parameters[$parameter_key] == '') {
+        unset($parameters[$parameter_key]);
+      }
+    }
     $status = $swiper_option_set
       ->clearParameters()
-      ->setParameters(array_filter($form_state->getValues()['parameters']))
+      ->setParameters($parameters)
       ->save();
 
     if ($status) {
