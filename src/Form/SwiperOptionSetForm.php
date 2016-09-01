@@ -870,7 +870,8 @@ class SwiperOptionSetForm extends EntityForm {
     foreach ($defaults as $group => $options) {
       foreach (array_keys($options) as $key) {
         $title = ucfirst(strtolower(preg_replace('/([A-Z])/', ' $1', $key)));
-        $default = !empty($swiper_option_set->getParameters()[$key]) ? $swiper_option_set->getParameters()[$key] : $options[$key];
+        // If parameter was yet set, use it, otherwise use default fallback.
+        $default = array_key_exists($key, $swiper_option_set->getParameters()) ? $swiper_option_set->getParameters()[$key] : $options[$key];
         $form[$group][$key]['#title'] = $title;
         $form[$group][$key]['#default_value'] = $default;
         $form[$group][$key]['#parents'] = ['parameters', $key];
