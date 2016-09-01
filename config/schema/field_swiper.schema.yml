@@ -310,9 +310,9 @@ field_swiper.swiper_option_set.*:
         loopedSlides:
           type: integer
           label: 'loopedSlides'
-        control:
-          type: string
-          label: 'control'
+#        control:
+#          type: string
+#          label: 'control'
         controlInverse:
           type: boolean
           label: 'controlInverse'
