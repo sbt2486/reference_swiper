@@ -40,17 +40,17 @@ use Drupal\field_swiper\SwiperOptionSetInterface;
 class SwiperOptionSet extends ConfigEntityBase implements SwiperOptionSetInterface {
 
   /**
-  * The option set ID.
-  *
-  * @var string
-  */
+   * The option set ID.
+   *
+   * @var string
+   */
   protected $id;
 
   /**
-  * The option set label.
-  *
-  * @var string
-  */
+   * The option set label.
+   *
+   * @var string
+   */
   protected $label;
 
   /**

@@ -1,11 +1,12 @@
 <?php
+
 namespace Drupal\field_swiper;
 
 use Drupal\Core\Config\Entity\ConfigEntityListBuilder;
 use Drupal\Core\Entity\EntityInterface;
 
 /**
- * Provides a listing of Example.
+ * Provides a listing of Swiper option sets.
  */
 class SwiperOptionSetListBuilder extends ConfigEntityListBuilder {
 
@@ -22,11 +23,9 @@ class SwiperOptionSetListBuilder extends ConfigEntityListBuilder {
    * {@inheritdoc}
    */
   public function buildRow(EntityInterface $entity) {
-    $row['label'] = $this->getLabel($entity);
+    $row['label'] = $entity->label();
     $row['id'] = $entity->id();
-
-    // You probably want a few more properties here...
-
+    // @todo possibly add some more properties.
     return $row + parent::buildRow($entity);
   }
 

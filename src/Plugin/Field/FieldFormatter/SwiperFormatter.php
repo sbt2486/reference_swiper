@@ -191,7 +191,7 @@ class SwiperFormatter extends EntityReferenceEntityFormatter implements Containe
             'fieldSwiper' => [
               'parameters' => [
                 $parameter_key => $swiper_option_set->getParameters(),
-              ]
+              ],
             ],
           ],
         ],
@@ -221,7 +221,7 @@ class SwiperFormatter extends EntityReferenceEntityFormatter implements Containe
     return [
       '#type' => 'item',
       '#markup' => t(
-        'There are no Swiper options sets available currently. Please create an option set first at <a href="@url" target="_blank">here</a>.',
+        'There are no Swiper option sets available currently. Please <a href="@url" target="_blank">create an option set</a> first.',
         ['@url' => $this->urlGenerator->generateFromRoute('entity.swiper_option_set.collection')]
       ),
     ];

@@ -7,9 +7,25 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Entity\Query\QueryFactory;
 use Drupal\Core\Form\FormStateInterface;
 
+/**
+ * Class SwiperOptionSetForm.
+ *
+ * Implements the form for the swiper option set config entity.
+ *
+ * @package Drupal\field_swiper\Form
+ */
 class SwiperOptionSetForm extends EntityForm {
 
   /**
+   * The injected entity query service.
+   *
+   * @var \Drupal\Core\Entity\Query\QueryFactory
+   */
+  protected $entityQuery;
+
+  /**
+   * Injects the entity_query service.
+   *
    * @param \Drupal\Core\Entity\Query\QueryFactory $entity_query
    *   The entity query.
    */
@@ -31,7 +47,7 @@ class SwiperOptionSetForm extends EntityForm {
    */
   public function form(array $form, FormStateInterface $form_state) {
     $form = parent::form($form, $form_state);
-    /** @var $swiper_option_set \Drupal\field_swiper\SwiperOptionSetInterface */
+    /* @var $swiper_option_set \Drupal\field_swiper\SwiperOptionSetInterface */
     $swiper_option_set = $this->entity;
 
     $form['label'] = [
@@ -50,14 +66,6 @@ class SwiperOptionSetForm extends EntityForm {
       ],
       '#disabled' => !$swiper_option_set->isNew(),
     ];
-
-    // Use this invisible element only to group parameter values in the form
-    // state values array inside a parent 'parameters' element that corresponds
-    // to the config entity's property.
-    $form['parameters'] = array(
-      '#type' => 'ccontainer',
-      '#tree' => TRUE,
-    );
 
     // Display the form in tabs as there are way too many options to display for
     // one single form.
@@ -142,17 +150,16 @@ class SwiperOptionSetForm extends EntityForm {
       '#type' => 'textfield',
       '#description' => $this->t('String with CSS selector of the element that will work like "prev" button after click on it.'),
     ];
-    // Hash Navigation
+    // Hash Navigation.
     $form['common']['hashnav'] = [
       '#type' => 'checkbox',
       '#description' => $this->t('Set to true to enable hash url navigation to for slides.'),
     ];
-    // Breakpoints
+    // Breakpoints.
     $form['common']['breakpoints'] = [
       '#type' => 'textarea',
-      '#description' => $this->t("	Allows to set different parameter for different responsive breakpoints (screen sizes). Not all parameters can be changed in breakpoints, only those which are not required different layout and logic, like slidesPerView, slidesPerGroup, spaceBetween. Such parameters like slidesPerColumn, loop, direction, effect won't work. "),
+      '#description' => $this->t("Allows to set different parameter for different responsive breakpoints (screen sizes). Not all parameters can be changed in breakpoints, only those which are not required different layout and logic, like slidesPerView, slidesPerGroup, spaceBetween. Such parameters like slidesPerColumn, loop, direction, effect won't work."),
     ];
-
 
     // Autoplay.
     $form['autoplay_wrapper'] = [
@@ -331,7 +338,7 @@ class SwiperOptionSetForm extends EntityForm {
         'container' => $this->t('Container'),
         'wrapper' => $this->t('Wrapper'),
       ],
-      '#description' => $this->t('	Target element to listen touch events on. Can be "container" (to listen for touch events on swiper-container) or "wrapper" (to listen for touch events on swiper-wrapper).'),
+      '#description' => $this->t('Target element to listen touch events on. Can be "container" (to listen for touch events on swiper-container) or "wrapper" (to listen for touch events on swiper-wrapper).'),
     ];
     $form['touches']['touchRatio'] = [
       '#type' => 'number',
@@ -558,7 +565,7 @@ class SwiperOptionSetForm extends EntityForm {
       '#description' => $this->t('Message for screen readers for single pagination bullet.'),
     ];
 
-    // Keyboard / Mousewheel
+    // Keyboard / Mousewheel.
     $form['keyboard'] = [
       '#type' => 'details',
       '#title' => $this->t('Keyboard and mouse control'),
@@ -648,10 +655,10 @@ class SwiperOptionSetForm extends EntityForm {
     ];
 
     // Controller.
-    // $form['loop_control_observer']['control'] = [
-    //   '#type' => '[Swiper Instance]',
-    //   '#description' => $this->t('Pass here another Swiper instance or array with Swiper instances that should be controlled by this Swiper.'),
-    // ];
+//     $form['loop_control_observer']['control'] = [
+//       '#type' => '[Swiper Instance]',
+//       '#description' => $this->t('Pass here another Swiper instance or array with Swiper instances that should be controlled by this Swiper.'),
+//     ];
     $form['loop_control_observer']['controlInverse'] = [
       '#type' => 'checkbox',
       '#description' => $this->t('Set to true and controlling will be in inverse direction.'),
@@ -865,6 +872,14 @@ class SwiperOptionSetForm extends EntityForm {
       '#description' => $this->t('CSS class name of next/prev button when it becomes disabled.'),
     ];
 
+    // Use this invisible element only to group parameter values in the form
+    // state values array. Such that they are available as sub keys of a
+    // 'parameters' element that corresponds to the config entity's property.
+    $form['parameters'] = array(
+      '#type' => 'container',
+      '#tree' => TRUE,
+    );
+
     // Set defaults and add titles for the fields.
     $defaults = $this->getSwiperDefaults();
     foreach ($defaults as $group => $options) {
@@ -874,6 +889,7 @@ class SwiperOptionSetForm extends EntityForm {
         $default = array_key_exists($key, $swiper_option_set->getParameters()) ? $swiper_option_set->getParameters()[$key] : $options[$key];
         $form[$group][$key]['#title'] = $title;
         $form[$group][$key]['#default_value'] = $default;
+        // Make sure the value appears below 'parameters' key in form state.
         $form[$group][$key]['#parents'] = ['parameters', $key];
       }
     }
@@ -885,7 +901,7 @@ class SwiperOptionSetForm extends EntityForm {
    * {@inheritdoc}
    */
   public function save(array $form, FormStateInterface $form_state) {
-    /** @var $swiper_option_set \Drupal\field_swiper\SwiperOptionSetInterface */
+    /* @var $swiper_option_set \Drupal\field_swiper\SwiperOptionSetInterface */
     $swiper_option_set = $this->entity;
 
     // Clear parameters before setting them in order to prevent setting of
@@ -1019,7 +1035,7 @@ class SwiperOptionSetForm extends EntityForm {
         // Touch resistance.
         'resistance' => TRUE,
         'resistanceRatio' => 0.85,
-        // Clicks
+        // Clicks.
         'preventClicks' => TRUE,
         'preventClicksPropagation' => TRUE,
         'slideToClickedSlide' => FALSE,
@@ -1048,7 +1064,7 @@ class SwiperOptionSetForm extends EntityForm {
       'scrollbar_wrapper' => [
         'scrollbar' => '',
         'scrollbarHide' => TRUE,
-        'scrollbarDraggable' =>	FALSE,
+        'scrollbarDraggable' => FALSE,
         'scrollbarSnapOnRelease' => FALSE,
       ],
       // Accessibility.
@@ -1058,7 +1074,7 @@ class SwiperOptionSetForm extends EntityForm {
         'nextSlideMessage' => $this->t('Next slide'),
         'firstSlideMessage' => $this->t('This is the first slide'),
         'lastSlideMessage' => $this->t('This is the last slide'),
-        'paginationBulletMessage' => $this->t(	'Go to slide {{index}}'),
+        'paginationBulletMessage' => $this->t('Go to slide {{index}}'),
       ],
       // Keyboard / mousewheel.
       'keyboard' => [
@@ -1069,7 +1085,7 @@ class SwiperOptionSetForm extends EntityForm {
         'mousewheelInvert' => FALSE,
         'mousewheelSensitivity' => 1,
       ],
-      // Images
+      // Images.
       'images' => [
         'preloadImages' => TRUE,
         'updateOnImagesReady' => TRUE,
@@ -1084,7 +1100,7 @@ class SwiperOptionSetForm extends EntityForm {
         'loopAdditionalSlides' => 0,
         'loopedSlides' => NULL,
         // Control
-        //'control' => '', // Named reference to Swiper instances
+        // 'control' => '', // Named reference to Swiper instances.
         'controlInverse' => FALSE,
         'controlBy' => 'slide',
         // Observer.
@@ -1137,8 +1153,8 @@ class SwiperOptionSetForm extends EntityForm {
         'bulletClass' => 'swiper-pagination-bullet',
         'bulletActiveClass' => 'swiper-pagination-bullet-active',
         'paginationHiddenClass' => 'swiper-pagination-hidden',
-        'paginationCurrentClass' =>'swiper-pagination-current',
-        'paginationTotalClass' =>'swiper-pagination-total',
+        'paginationCurrentClass' => 'swiper-pagination-current',
+        'paginationTotalClass' => 'swiper-pagination-total',
         'paginationProgressbarClass' => 'swiper-pagination-progressbar',
         'buttonDisabledClass' => 'swiper-button-disabled',
       ],
