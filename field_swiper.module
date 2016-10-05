@@ -41,6 +41,7 @@ function template_preprocess_swiper_container(&$variables) {
     $variables['has_parent'] = TRUE;
   }
 
+  // Copy values into variables for easier access in template.
   $variables['children'] = $element['#children'];
   $variables['attributes'] = $element['#attributes'];
 
@@ -58,6 +59,23 @@ function template_preprocess_swiper_container(&$variables) {
         // Replace the dot in the CSS selector string of the control.
         'class' => [str_replace('.', '', $parameters[$param_key])],
       ]);
+    }
+  }
+}
+
+/**
+ * Implements hook_preprocess_field().
+ */
+function field_swiper_preprocess_field(&$variables) {
+  if ($variables['element']['#formatter'] == 'swiper_formatter') {
+    $delta = 0;
+    while (!empty($variables['element'][$delta])) {
+      // Unset the _attributes property to prevent it from being rendered on
+      // contained elements. This happens for example when using the responsive
+      // image formatter of the file_entity module and prevents proper working
+      // of the JS library.
+      unset($variables['element']['#items'][$delta]->_attributes);
+      $delta++;
     }
   }
 }

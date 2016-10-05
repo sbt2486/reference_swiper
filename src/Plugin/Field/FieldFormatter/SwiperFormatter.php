@@ -176,6 +176,7 @@ class SwiperFormatter extends EntityReferenceEntityFormatter implements Containe
       // Swiper JS requires this class.
       $elements['#attributes']['class'] = 'swiper-wrapper';
 
+      // @todo add caching.
       // This will render the required markup and add the library.
       $elements = [
         '#theme' => 'swiper_container',
