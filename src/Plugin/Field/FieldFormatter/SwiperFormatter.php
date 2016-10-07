@@ -111,11 +111,10 @@ class SwiperFormatter extends EntityReferenceEntityFormatter implements Containe
         '#type' => 'entity_autocomplete',
         '#title' => t('Swiper option set'),
         '#target_type' => 'swiper_option_set',
-        '#default_value' => SwiperOptionSet::load($this->getSetting('swiper_option_set')),
-        // Validation is done in static::validateConfigurationForm().
+        '#default_value' => $this->getSetting('swiper_option_set') ? SwiperOptionSet::load($this->getSetting('swiper_option_set')) : '',
         '#validate_reference' => FALSE,
-        '#size' => '60',
-        '#maxlength' => '60',
+        '#size' => 60,
+        '#maxlength' => 60,
         '#description' => t('Select the Swiper option set you would like to use for this field'),
       );
     }
@@ -159,9 +158,9 @@ class SwiperFormatter extends EntityReferenceEntityFormatter implements Containe
    */
   public function view(FieldItemListInterface $items, $langcode = NULL) {
     $elements = parent::view($items, $langcode);
-    // If there's more than one reference to display, add the Swiper library
-    // and some markup for the Swiper.
-    if ($items->count() > 1) {
+    // If there's more than one reference to display and an option set was
+    // configured, add the Swiper library and some markup for the Swiper.
+    if ($items->count() > 1 && $this->getSetting('swiper_option_set')) {
       /** @var \Drupal\field_swiper\Entity\SwiperOptionSet $swiper_option_set */
       $swiper_option_set = SwiperOptionSet::load(
         $this->getSetting('swiper_option_set')
