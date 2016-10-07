@@ -73,7 +73,7 @@ function field_swiper_preprocess_field(&$variables) {
       // Unset the _attributes property to prevent it from being rendered on
       // contained elements. This happens for example when using the responsive
       // image formatter of the file_entity module and prevents proper working
-      // of the JS library.
+      // of the JS library due to nested elements with the swiper-slide class.
       unset($variables['element']['#items'][$delta]->_attributes);
       $delta++;
     }

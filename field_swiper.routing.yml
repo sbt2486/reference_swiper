@@ -18,7 +18,7 @@ entity.swiper_option_set.edit_form:
   path: '/admin/config/system/field-swiper/{swiper_option_set}'
   defaults:
     _entity_form: 'swiper_option_set.edit'
-    _title: 'Edit example'
+    _title: 'Edit swiper option set'
   requirements:
     _permission: 'administer swiper option sets'
 
