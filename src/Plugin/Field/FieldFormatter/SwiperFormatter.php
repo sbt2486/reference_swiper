@@ -2,6 +2,7 @@
 
 namespace Drupal\field_swiper\Plugin\Field\FieldFormatter;
 
+use Drupal\Core\Cache\Cache;
 use Drupal\Core\Entity\EntityDisplayRepositoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
@@ -184,6 +185,13 @@ class SwiperFormatter extends EntityReferenceEntityFormatter implements Containe
         '#attributes' => [
           'class' => ['swiper-container'],
           'data-swiper-param-key' => $parameter_key,
+        ],
+        // This can be cached until the node or the option set will change.
+        '#cache' => [
+          'tags' => Cache::mergeTags(
+            $swiper_option_set->getCacheTags(),
+            $items->getEntity()->getCacheTags()
+          ),
         ],
         '#attached' => [
           'library' => ['field_swiper/field_swiper.swiper'],
