@@ -20,15 +20,35 @@
 #}
 {%
   set classes = [
-    has_parent ? 'js-form-wrapper',
-    has_parent ? 'form-wrapper',
+    'field',
+    'field--name-' ~ element['#children']['#field_name']|clean_class,
+    'field--type-' ~ element['#children']['#field_type']|clean_class,
+    'field--label-' ~ element['#children']['#label_display']|clean_class,
+  ]
+%}
+{%
+  set title_classes = [
+    'field__label',
+    label_display == 'visually_hidden' ? 'visually-hidden',
   ]
 %}
 <div{{ attributes.addClass(classes) }}>
-  {{ children }}
-  {% for control in controls %}
-    {% if control %}
-      <div {{ control.attributes }}></div>
-    {% endif %}
-  {% endfor %}
+  {% if not element['#children']['#label_hidden'] %}
+    <div{{ title_attributes.addClass(title_classes) }}>{{ element['#children']['#title'] }}</div>
+  {% endif %}
+  <div {{ container_attributes }}>
+    <div {{ wrapper_attributes.addClass('field__items') }}>
+      {% for slide_content in children %}
+          <div {{ slide_attributes }}>
+            {{ slide_content }}
+          </div>
+      {% endfor %}
+    </div>
+
+    {% for control in controls %}
+      {% if control %}
+        <div {{ control.attributes }}></div>
+      {% endif %}
+    {% endfor %}
+  </div>
 </div>

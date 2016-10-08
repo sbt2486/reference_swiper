@@ -27,23 +27,22 @@ function field_swiper_theme($existing, $type, $theme, $path) {
  *     Properties used: #id, #attributes, #children.
  */
 function template_preprocess_swiper_container(&$variables) {
-  $variables['has_parent'] = FALSE;
   $element = $variables['element'];
-  // Ensure #attributes is set.
-  $element += array('#attributes' => array());
-
-  // Special handling for form elements.
-  if (isset($element['#array_parents'])) {
-    // Assign an html ID.
-    if (!isset($element['#attributes']['id'])) {
-      $element['#attributes']['id'] = $element['#id'];
-    }
-    $variables['has_parent'] = TRUE;
-  }
 
   // Copy values into variables for easier access in template.
-  $variables['children'] = $element['#children'];
-  $variables['attributes'] = $element['#attributes'];
+  $delta = 0;
+  while(!empty($element['#children'][$delta])) {
+    $variables['children'][$delta] = $element['#children'][$delta];
+    $delta++;
+  }
+  $variables['label_hidden'] = ($element['#children']['#label_display'] == 'hidden');
+
+  // Prepare attributes.
+  $variables['attributes'] = new Attribute();
+  $variables['title_attributes'] = new Attribute();
+  $variables['container_attributes'] = new Attribute($element['#attributes']);
+  $variables['wrapper_attributes'] = new Attribute(['class' => $element['#swiper_parameters']['wrapperClass']]);
+  $variables['slide_attributes'] = new Attribute(['class' => $element['#swiper_parameters']['slideClass']]);
 
   // Check for controls and add variables for them necessary.
   $parameters = $element['#swiper_parameters'];

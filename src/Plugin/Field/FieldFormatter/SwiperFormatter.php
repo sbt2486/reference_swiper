@@ -173,9 +173,6 @@ class SwiperFormatter extends EntityReferenceEntityFormatter implements Containe
       // times on a page in different view modes with different Swiper options.
       $parameter_key = $this->fieldDefinition->id() . '.' . $this->viewMode;
 
-      // Swiper JS requires this class.
-      $elements['#attributes']['class'] = 'swiper-wrapper';
-
       // This will render the required markup and add the library.
       $elements = [
         '#theme' => 'swiper_container',
@@ -206,16 +203,6 @@ class SwiperFormatter extends EntityReferenceEntityFormatter implements Containe
     }
 
     return $elements;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function viewElements(FieldItemListInterface $items, $langcode) {
-    foreach ($items as $delta => $item) {
-      $items[$delta]->_attributes += ['class' => ['swiper-slide']];
-    }
-    return parent::viewElements($items, $langcode);
   }
 
   /**
