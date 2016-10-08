@@ -11,10 +11,6 @@ field_swiper.swiper:
       /libraries/swiper/dist/css/swiper.min.css: {}
   dependencies:
     - core/jquery
-    #- core/drupal
+    - core/drupal
     - core/drupalSettings
-    #- core/drupal.debounce
     - core/jquery.once
-    #- editor/drupal.editor
-    # Ensure to run after core/matchmedia.
-    #- core/matchmedia
