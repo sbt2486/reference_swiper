@@ -39,7 +39,7 @@
   <div {{ container_attributes }}>
     <div {{ wrapper_attributes.addClass('field__items') }}>
       {% for slide_content in children %}
-          <div {{ slide_attributes }}>
+          <div {{ slide_attributes.addClass('field__item') }}>
             {{ slide_content }}
           </div>
       {% endfor %}
