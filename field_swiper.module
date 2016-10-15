@@ -17,6 +17,18 @@ function field_swiper_theme($existing, $type, $theme, $path) {
 }
 
 /**
+ * Implements hook_field_formatter_info_alter().
+ */
+function field_swiper_field_formatter_info_alter(array &$info) {
+  // Make the Swiper reference formatter available for files and images if the
+  // file_entity module is installed.
+  if (\Drupal::moduleHandler()->moduleExists('file_entity') && !empty($info['swiper_formatter'])) {
+    $info['swiper_formatter']['field_types'][] = 'file';
+    $info['swiper_formatter']['field_types'][] = 'image';
+  }
+}
+
+/**
  * Prepares variables for the swiper container.
  *
  * Default template: swiper-container.html.twig.
@@ -27,23 +39,22 @@ function field_swiper_theme($existing, $type, $theme, $path) {
  *     Properties used: #id, #attributes, #children.
  */
 function template_preprocess_swiper_container(&$variables) {
-  $variables['has_parent'] = FALSE;
   $element = $variables['element'];
-  // Ensure #attributes is set.
-  $element += array('#attributes' => array());
-
-  // Special handling for form elements.
-  if (isset($element['#array_parents'])) {
-    // Assign an html ID.
-    if (!isset($element['#attributes']['id'])) {
-      $element['#attributes']['id'] = $element['#id'];
-    }
-    $variables['has_parent'] = TRUE;
-  }
 
   // Copy values into variables for easier access in template.
-  $variables['children'] = $element['#children'];
-  $variables['attributes'] = $element['#attributes'];
+  $delta = 0;
+  while(!empty($element['#children'][$delta])) {
+    $variables['children'][$delta] = $element['#children'][$delta];
+    $delta++;
+  }
+  $variables['label_hidden'] = ($element['#children']['#label_display'] == 'hidden');
+
+  // Prepare attributes.
+  $variables['attributes'] = new Attribute();
+  $variables['title_attributes'] = new Attribute();
+  $variables['container_attributes'] = new Attribute($element['#attributes']);
+  $variables['wrapper_attributes'] = new Attribute(['class' => $element['#swiper_parameters']['wrapperClass']]);
+  $variables['slide_attributes'] = new Attribute(['class' => $element['#swiper_parameters']['slideClass']]);
 
   // Check for controls and add variables for them necessary.
   $parameters = $element['#swiper_parameters'];
@@ -59,23 +70,6 @@ function template_preprocess_swiper_container(&$variables) {
         // Replace the dot in the CSS selector string of the control.
         'class' => [str_replace('.', '', $parameters[$param_key])],
       ]);
-    }
-  }
-}
-
-/**
- * Implements hook_preprocess_field().
- */
-function field_swiper_preprocess_field(&$variables) {
-  if ($variables['element']['#formatter'] == 'swiper_formatter') {
-    $delta = 0;
-    while (!empty($variables['element'][$delta])) {
-      // Unset the _attributes property to prevent it from being rendered on
-      // contained elements. This happens for example when using the responsive
-      // image formatter of the file_entity module and prevents proper working
-      // of the JS library due to nested elements with the swiper-slide class.
-      unset($variables['element']['#items'][$delta]->_attributes);
-      $delta++;
     }
   }
 }

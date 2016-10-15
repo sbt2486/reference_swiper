@@ -23,9 +23,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   label = @Translation("Swiper Field"),
  *   description = @Translation("Displays multi value field contents as Swiper slider."),
  *   field_types = {
- *     "entity_reference",
- *     "image",
- *     "file",
+ *     "entity_reference"
  *   }
  * )
  */
@@ -135,9 +133,10 @@ class SwiperFormatter extends EntityReferenceEntityFormatter implements Containe
     // Check whether any option sets are available.
     if (SwiperOptionSet::loadMultiple()) {
       if ($this->getSetting('swiper_option_set')) {
+        $swiper_option_set = SwiperOptionSet::load($this->getSetting('swiper_option_set'));
         $summary[] = t(
           'Swiper option set: @option_set',
-          ['@option_set' => SwiperOptionSet::load($this->getSetting('swiper_option_set'))->label()]
+          ['@option_set' => $swiper_option_set->label()]
         );
       }
       else {
@@ -166,15 +165,16 @@ class SwiperFormatter extends EntityReferenceEntityFormatter implements Containe
       $swiper_option_set = SwiperOptionSet::load(
         $this->getSetting('swiper_option_set')
       );
+      // Prevent fatal error in case option set was deleted.
+      if (!$swiper_option_set) {
+        return $elements;
+      }
 
       // Create a key that allows fetching the view mode and field specific
       // option set in JS. This is necessary in order to support different
       // Swiper option sets for the same node that might be displayed multiple
       // times on a page in different view modes with different Swiper options.
       $parameter_key = $this->fieldDefinition->id() . '.' . $this->viewMode;
-
-      // Swiper JS requires this class.
-      $elements['#attributes']['class'] = 'swiper-wrapper';
 
       // This will render the required markup and add the library.
       $elements = [
@@ -206,16 +206,6 @@ class SwiperFormatter extends EntityReferenceEntityFormatter implements Containe
     }
 
     return $elements;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function viewElements(FieldItemListInterface $items, $langcode) {
-    foreach ($items as $delta => $item) {
-      $items[$delta]->_attributes += ['class' => ['swiper-slide']];
-    }
-    return parent::viewElements($items, $langcode);
   }
 
   /**
