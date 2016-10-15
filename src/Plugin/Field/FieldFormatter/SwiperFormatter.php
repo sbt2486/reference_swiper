@@ -167,6 +167,10 @@ class SwiperFormatter extends EntityReferenceEntityFormatter implements Containe
       $swiper_option_set = SwiperOptionSet::load(
         $this->getSetting('swiper_option_set')
       );
+      // Prevent fatal error in case option set was deleted.
+      if (!$swiper_option_set) {
+        return $elements;
+      }
 
       // Create a key that allows fetching the view mode and field specific
       // option set in JS. This is necessary in order to support different
