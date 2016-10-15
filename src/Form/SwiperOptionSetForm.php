@@ -3,6 +3,7 @@
 namespace Drupal\field_swiper\Form;
 
 use Drupal\Core\Entity\EntityForm;
+use Drupal\Core\Entity\EntityInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Entity\Query\QueryFactory;
 use Drupal\Core\Form\FormStateInterface;
@@ -47,6 +48,7 @@ class SwiperOptionSetForm extends EntityForm {
    */
   public function form(array $form, FormStateInterface $form_state) {
     $form = parent::form($form, $form_state);
+    $form['#entity_builders'][] = [$this, 'prepareParameters'];
     /* @var $swiper_option_set \Drupal\field_swiper\SwiperOptionSetInterface */
     $swiper_option_set = $this->entity;
 
@@ -901,34 +903,77 @@ class SwiperOptionSetForm extends EntityForm {
    * {@inheritdoc}
    */
   public function save(array $form, FormStateInterface $form_state) {
-    /* @var $swiper_option_set \Drupal\field_swiper\SwiperOptionSetInterface */
-    $swiper_option_set = $this->entity;
-
     // Clear parameters before setting them in order to prevent setting of
     // disabled parameters like width or height.
-    $parameters = $form_state->getValues()['parameters'];
-    foreach (['width', 'height'] as $parameter_key) {
-      if ($parameters[$parameter_key] == '') {
-        unset($parameters[$parameter_key]);
-      }
-    }
-    $status = $swiper_option_set
-      ->clearParameters()
-      ->setParameters($parameters)
-      ->save();
+    $status = $this->entity->save();
 
     if ($status) {
       drupal_set_message($this->t('Saved the %label Swiper option set.', array(
-        '%label' => $swiper_option_set->label(),
+        '%label' => $this->entity->label(),
       )));
     }
     else {
       drupal_set_message($this->t('The %label Swiper option set was not saved.', array(
-        '%label' => $swiper_option_set->label(),
+        '%label' => $this->entity->label(),
       )));
     }
 
     $form_state->setRedirect('entity.swiper_option_set.collection');
+  }
+
+  /**
+   * Resets the parameters property on the option set.
+   *
+   * This is necessary because an option set shall contain only parameters,
+   * which are differing from the default values. As parameters get passed down
+   * to the client side as drupal settings, we don't want to pollute those
+   * with default values that are set upon Swiper instantiation anyway.
+   *
+   * The buildEntity() method of the parent copies all values into the
+   * parameters property, so we override the property again in this entity
+   * builder callback, in order to make sure only parameters that differ from
+   * defaults are set.
+   *
+   * @param string $entity_type_id
+   *   The entity type identifier.
+   * @param \Drupal\Core\Entity\EntityInterface $entity
+   *   The entity updated with the submitted values.
+   * @param array $form
+   *   The complete form array.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   The current state of the form.
+   *
+   * @see \Drupal\Core\Entity\ContentEntityForm::form()
+   */
+  protected function prepareParameters($entity_type_id, EntityInterface $entity, array $form, FormStateInterface $form_state) {
+    $values = $form_state->getValues()['parameters'];
+    $grouped_defaults = $this->getSwiperDefaults();
+    $parameter_defaults = [];
+    $parameters = [];
+    // Get all defaults into one array.
+    foreach ($grouped_defaults as $group => $defaults) {
+      $parameter_defaults += $defaults;
+    }
+    // Gather all parameters that are not equal to their default value.
+    foreach ($values as $parameter_key => $value) {
+      if ($value != $parameter_defaults[$parameter_key]) {
+        $parameters[$parameter_key] = $value;
+      }
+    }
+
+    // Finally make sure some html classes are are set, as they're required in
+    // pre-processing.
+    $base_parameters = ['wrapperClass', 'slideClass'];
+    foreach ($base_parameters as $parameter_key) {
+      if (empty($parameters[$parameter_key])) {
+        $parameters[$parameter_key] = $parameter_defaults[$parameter_key];
+      }
+    }
+
+    // Clear parameters and reset them to the gathered ones.
+    $entity
+      ->clearParameters()
+      ->setParameters($parameters);
   }
 
   /**

@@ -132,8 +132,8 @@ class SwiperFormatter extends EntityReferenceEntityFormatter implements Containe
 
     // Check whether any option sets are available.
     if (SwiperOptionSet::loadMultiple()) {
-      $swiper_option_set = SwiperOptionSet::load($this->getSetting('swiper_option_set'));
-      if ($swiper_option_set) {
+      if ($this->getSetting('swiper_option_set')) {
+        $swiper_option_set = SwiperOptionSet::load($this->getSetting('swiper_option_set'));
         $summary[] = t(
           'Swiper option set: @option_set',
           ['@option_set' => $swiper_option_set->label()]
