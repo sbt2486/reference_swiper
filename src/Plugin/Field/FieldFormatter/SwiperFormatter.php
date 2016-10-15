@@ -23,9 +23,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   label = @Translation("Swiper Field"),
  *   description = @Translation("Displays multi value field contents as Swiper slider."),
  *   field_types = {
- *     "entity_reference",
- *     "image",
- *     "file",
+ *     "entity_reference"
  *   }
  * )
  */
