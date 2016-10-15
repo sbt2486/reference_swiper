@@ -56,7 +56,7 @@ function template_preprocess_swiper_container(&$variables) {
   $variables['wrapper_attributes'] = new Attribute(['class' => $element['#swiper_parameters']['wrapperClass']]);
   $variables['slide_attributes'] = new Attribute(['class' => $element['#swiper_parameters']['slideClass']]);
 
-  // Check for controls and add variables for them necessary.
+  // Check for controls and add them to variables array if necessary.
   $parameters = $element['#swiper_parameters'];
   $controls = [
     'pagination' => 'pagination',

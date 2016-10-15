@@ -9,7 +9,7 @@
   'use strict';
 
   /**
-   * Registers behaviours related to field swiper.
+   * Register behavior that initializes Swiper instances.
    */
   Drupal.behaviors.fieldSwiper = {
     attach: function (context) {
