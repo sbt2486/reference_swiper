@@ -146,11 +146,11 @@ class SwiperOptionSetForm extends EntityForm {
     // Navigation Buttons.
     $form['common']['nextButton'] = [
       '#type' => 'textfield',
-      '#description' => $this->t('String with CSS selector of the element that will work like "next" button after click on it.'),
+      '#description' => $this->t('String with CSS selector of the element that will work like "next" button after click on it. <strong>Currently, only HTML id or class selectors are supported</strong>.'),
     ];
     $form['common']['prevButton'] = [
       '#type' => 'textfield',
-      '#description' => $this->t('String with CSS selector of the element that will work like "prev" button after click on it.'),
+      '#description' => $this->t('String with CSS selector of the element that will work like "prev" button after click on it. <strong>Currently, only HTML id or class selectors are supported</strong>.'),
     ];
     // Hash Navigation.
     $form['common']['hashnav'] = [
@@ -472,7 +472,7 @@ class SwiperOptionSetForm extends EntityForm {
     ];
     $form['pagination_wrapper']['pagination'] = [
       '#type' => 'textfield',
-      '#description' => $this->t('String with CSS selector of the container with pagination.'),
+      '#description' => $this->t('String with CSS selector of the container with pagination. <strong>Currently, only HTML id or class selectors are supported</strong>.'),
     ];
     $form['pagination_wrapper']['paginationType'] = [
       '#type' => 'select',
@@ -521,7 +521,7 @@ class SwiperOptionSetForm extends EntityForm {
     ];
     $form['scrollbar_wrapper']['scrollbar'] = [
       '#type' => 'textfield',
-      '#description' => $this->t('String with CSS selector of the container with scrollbar.'),
+      '#description' => $this->t('String with CSS selector of the container with scrollbar. <strong>Currently, only HTML id or class selectors are supported</strong>.'),
     ];
     $form['scrollbar_wrapper']['scrollbarHide'] = [
       '#type' => 'checkbox',
