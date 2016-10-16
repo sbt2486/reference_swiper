@@ -1,19 +1,22 @@
 {#
 /**
  * @file
- * Default theme implementation of a field swiper container.
+ * Default theme implementation of a swiper reference field.
  *
  * Available variables:
- * - attributes: HTML attributes for the containing element.
- * - children: The rendered child elements of the container.
- * - has_parent: A flag to indicate that the container has one or more parent
- *   containers.
- * - pager: Indicates whether or not to render an element for pagination.
- * - next_button: Indicates whether or not to render the 'next' button.
- * - prev_button: Indicates whether or not to render the 'previous' button.
- * - scrollbar: Indicates whether or not to render the a swiper scrollbar.
+ * - attributes: HTML attributes for the field's wrapping element.
+ * - container_attributes: HTML attributes for the swiper container.
+ * - wrapper_attributes: HTML attributes for the swiper wrapper.
+ * - slide_attributes: HTML attributes for a single swiper slide.
+ * - children: Contains the field propertioes and child elements of the field.
+ * - controls: An array of controls to render on the swiper field, may contain
+ *     the following controls:
+ *     - pager: Indicates whether or not to render an element for pagination.
+ *     - next_button: Indicates whether or not to render the 'next' button.
+ *     - prev_button: Indicates whether or not to render the 'previous' button.
+ *     - scrollbar: Indicates whether or not to render the a swiper scrollbar.
  *
- * @see template_preprocess_swiper_container()
+ * @see template_preprocess_swiper_reference_field()
  *
  * @ingroup themeable
  */

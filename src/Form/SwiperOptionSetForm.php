@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\field_swiper\Form;
+namespace Drupal\reference_swiper\Form;
 
 use Drupal\Core\Entity\EntityForm;
 use Drupal\Core\Entity\EntityInterface;
@@ -13,7 +13,7 @@ use Drupal\Core\Form\FormStateInterface;
  *
  * Implements the form for the swiper option set config entity.
  *
- * @package Drupal\field_swiper\Form
+ * @package Drupal\reference_swiper\Form
  */
 class SwiperOptionSetForm extends EntityForm {
 
@@ -49,7 +49,7 @@ class SwiperOptionSetForm extends EntityForm {
   public function form(array $form, FormStateInterface $form_state) {
     $form = parent::form($form, $form_state);
     $form['#entity_builders'][] = [$this, 'prepareParameters'];
-    /* @var $swiper_option_set \Drupal\field_swiper\SwiperOptionSetInterface */
+    /* @var $swiper_option_set \Drupal\reference_swiper\SwiperOptionSetInterface */
     $swiper_option_set = $this->entity;
 
     $form['label'] = [
@@ -57,7 +57,7 @@ class SwiperOptionSetForm extends EntityForm {
       '#title' => $this->t('Label'),
       '#maxlength' => 255,
       '#default_value' => $swiper_option_set->label(),
-      '#description' => $this->t('Label for the Example.'),
+      '#description' => $this->t('Label for the Swiper option set.'),
       '#required' => TRUE,
     ];
     $form['id'] = [

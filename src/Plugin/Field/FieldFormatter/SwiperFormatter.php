@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\field_swiper\Plugin\Field\FieldFormatter;
+namespace Drupal\reference_swiper\Plugin\Field\FieldFormatter;
 
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Entity\EntityDisplayRepositoryInterface;
@@ -12,16 +12,16 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Routing\UrlGeneratorInterface;
-use Drupal\field_swiper\Entity\SwiperOptionSet;
+use Drupal\reference_swiper\Entity\SwiperOptionSet;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Plugin implementation of the 'Swiper' field formatter.
+ * Plugin implementation of the reference swiper field formatter.
  *
  * @FieldFormatter(
- *   id = "swiper_formatter",
- *   label = @Translation("Swiper Field"),
- *   description = @Translation("Displays multi value field contents as Swiper slider."),
+ *   id = "reference_swiper_formatter",
+ *   label = @Translation("Reference Swiper"),
+ *   description = @Translation("Renders multi value reference field contents as Swiper slider."),
  *   field_types = {
  *     "entity_reference"
  *   }
@@ -114,7 +114,7 @@ class SwiperFormatter extends EntityReferenceEntityFormatter implements Containe
         '#validate_reference' => FALSE,
         '#size' => 60,
         '#maxlength' => 60,
-        '#description' => t('Select the Swiper option set you would like to use for this field'),
+        '#description' => t('Select the swiper option set you would like to use for this field'),
       );
     }
     else {
@@ -152,16 +152,13 @@ class SwiperFormatter extends EntityReferenceEntityFormatter implements Containe
 
   /**
    * {@inheritdoc}
-   *
-   * @see ::prepareView()
-   * @see ::getEntitiestoView()
    */
   public function view(FieldItemListInterface $items, $langcode = NULL) {
     $elements = parent::view($items, $langcode);
     // If there's more than one reference to display and an option set was
     // configured, add the Swiper library and some markup for the Swiper.
     if ($items->count() > 1 && $this->getSetting('swiper_option_set')) {
-      /** @var \Drupal\field_swiper\Entity\SwiperOptionSet $swiper_option_set */
+      /** @var \Drupal\reference_swiper\Entity\SwiperOptionSet $swiper_option_set */
       $swiper_option_set = SwiperOptionSet::load(
         $this->getSetting('swiper_option_set')
       );
@@ -178,7 +175,7 @@ class SwiperFormatter extends EntityReferenceEntityFormatter implements Containe
 
       // This will render the required markup and add the library.
       $elements = [
-        '#theme' => 'swiper_container',
+        '#theme' => 'swiper_reference_field',
         '#children' => $elements,
         '#swiper_parameters' => $swiper_option_set->getParameters(),
         '#attributes' => [
@@ -193,9 +190,9 @@ class SwiperFormatter extends EntityReferenceEntityFormatter implements Containe
           ),
         ],
         '#attached' => [
-          'library' => ['field_swiper/field_swiper.swiper'],
+          'library' => ['reference_swiper/reference_swiper.field'],
           'drupalSettings' => [
-            'fieldSwiper' => [
+            'referenceSwiper' => [
               'parameters' => [
                 $parameter_key => $swiper_option_set->getParameters(),
               ],

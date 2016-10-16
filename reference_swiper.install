@@ -2,19 +2,19 @@
 
 /**
  * @file
- * Provides installation and update related hooks for the field_swiper module.
+ * Provides installation and update hooks for the reference_swiper module.
  */
 
 /**
  * Implements hook_requirements().
  */
-function field_swiper_requirements($phase) {
+function reference_swiper_requirements($phase) {
   $requirements = [];
 
   if (in_array($phase, ['runtime', 'install'])) {
-    // Check if the Swiper library is available.
+    // Check if the Swiper JS library is available.
     if (!file_exists(DRUPAL_ROOT . '/libraries/swiper/dist/js/swiper.jquery.min.js')) {
-      $requirements['field_swiper'] = array(
+      $requirements['reference_swiper'] = array(
         'title' => t('Swiper JS Library'),
         'severity' => REQUIREMENT_ERROR,
         'description' => t('The Swiper library was not found in the DRUPAL_ROOT/libraries folder. Please download the library from <a href="https://github.com/nolimits4web/Swiper" target="_blank">here</a> and make sure the file swiper.jquery.min.js exists in the DRUPAL_ROOT/libraries/swiper/dist/js/ folder.'),
@@ -22,7 +22,7 @@ function field_swiper_requirements($phase) {
     }
     else {
       // @todo report the installed version of the Swiper library.
-      $requirements['field_swiper'] = array(
+      $requirements['reference_swiper'] = array(
         'title' => t('Swiper JS Library'),
         'severity' => REQUIREMENT_OK,
         'description' => t('The Swiper library was found in the DRUPAL_ROOT/libraries folder.'),

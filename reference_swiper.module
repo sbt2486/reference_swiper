@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Formats multi value fields as Swiper sliders.
+ * Formats multi value reference fields as Swiper sliders.
  */
 
 use Drupal\Core\Template\Attribute;
@@ -10,35 +10,35 @@ use Drupal\Core\Template\Attribute;
 /**
  * Implements hook_theme().
  */
-function field_swiper_theme($existing, $type, $theme, $path) {
+function reference_swiper_theme($existing, $type, $theme, $path) {
   return [
-    'swiper_container' => ['render element' => 'element'],
+    'swiper_reference_field' => ['render element' => 'element'],
   ];
 }
 
 /**
  * Implements hook_field_formatter_info_alter().
  */
-function field_swiper_field_formatter_info_alter(array &$info) {
-  // Make the Swiper reference formatter available for files and images if the
+function reference_swiper_field_formatter_info_alter(array &$info) {
+  // Make the swiper reference formatter available for files and images if the
   // file_entity module is installed.
-  if (\Drupal::moduleHandler()->moduleExists('file_entity') && !empty($info['swiper_formatter'])) {
-    $info['swiper_formatter']['field_types'][] = 'file';
-    $info['swiper_formatter']['field_types'][] = 'image';
+  if (\Drupal::moduleHandler()->moduleExists('file_entity') && !empty($info['reference_swiper_formatter'])) {
+    $info['reference_swiper_formatter']['field_types'][] = 'file';
+    $info['reference_swiper_formatter']['field_types'][] = 'image';
   }
 }
 
 /**
- * Prepares variables for the swiper container.
+ * Prepares variables for a swiper reference field.
  *
- * Default template: swiper-container.html.twig.
+ * Default template: swiper-reference-field.html.twig.
  *
  * @param array $variables
  *   An associative array containing:
  *   - element: An associative array containing the properties of the element.
  *     Properties used: #id, #attributes, #children.
  */
-function template_preprocess_swiper_container(&$variables) {
+function template_preprocess_swiper_reference_field(&$variables) {
   $element = $variables['element'];
 
   // Copy values into variables for easier access in template.

@@ -1,9 +1,9 @@
 <?php
 
-namespace Drupal\field_swiper\Entity;
+namespace Drupal\reference_swiper\Entity;
 
 use Drupal\Core\Config\Entity\ConfigEntityBase;
-use Drupal\field_swiper\SwiperOptionSetInterface;
+use Drupal\reference_swiper\SwiperOptionSetInterface;
 
 /**
  * Defines the Swiper option set config entity.
@@ -12,10 +12,10 @@ use Drupal\field_swiper\SwiperOptionSetInterface;
  *   id = "swiper_option_set",
  *   label = @Translation("Swiper option set"),
  *   handlers = {
- *     "list_builder" = "Drupal\field_swiper\SwiperOptionSetListBuilder",
+ *     "list_builder" = "Drupal\reference_swiper\SwiperOptionSetListBuilder",
  *     "form" = {
- *       "add" = "Drupal\field_swiper\Form\SwiperOptionSetForm",
- *       "edit" = "Drupal\field_swiper\Form\SwiperOptionSetForm",
+ *       "add" = "Drupal\reference_swiper\Form\SwiperOptionSetForm",
+ *       "edit" = "Drupal\reference_swiper\Form\SwiperOptionSetForm",
  *       "delete" = "Drupal\Core\Entity\EntityDeleteForm",
  *     }
  *   },
@@ -26,9 +26,9 @@ use Drupal\field_swiper\SwiperOptionSetInterface;
  *     "label" = "label",
  *   },
  *   links = {
- *     "collection" = "/admin/config/system/field-swiper",
- *     "edit-form" = "/admin/config/system/field-swiper/{swiper_option_set}",
- *     "delete-form" = "/admin/config/system/field-swiper/{swiper_option_set}/delete",
+ *     "collection" = "/admin/config/system/reference-swiper",
+ *     "edit-form" = "/admin/config/system/reference-swiper/{swiper_option_set}",
+ *     "delete-form" = "/admin/config/system/reference-swiper/{swiper_option_set}/delete",
  *   },
  *   config_export = {
  *     "id",

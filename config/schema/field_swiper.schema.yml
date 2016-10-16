@@ -1,5 +1,5 @@
 # Describe the option set config entity type.
-field_swiper.swiper_option_set.*:
+reference_swiper.swiper_option_set.*:
   type: config_entity
   label: 'Swiper option set config'
   mapping:

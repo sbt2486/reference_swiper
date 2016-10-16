@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\field_swiper;
+namespace Drupal\reference_swiper;
 
 use Drupal\Core\Config\Entity\ConfigEntityListBuilder;
 use Drupal\Core\Entity\EntityInterface;
@@ -14,7 +14,7 @@ class SwiperOptionSetListBuilder extends ConfigEntityListBuilder {
    * {@inheritdoc}
    */
   public function buildHeader() {
-    $header['label'] = $this->t('Example');
+    $header['label'] = $this->t('Swiper Option Set');
     $header['id'] = $this->t('Machine name');
     return $header + parent::buildHeader();
   }

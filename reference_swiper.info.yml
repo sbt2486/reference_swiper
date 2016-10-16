@@ -1,0 +1,5 @@
+type: module
+name: Swiper reference formatter
+description: Formats multi value reference fields as Swiper sliders.
+core: 8.x
+

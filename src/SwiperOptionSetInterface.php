@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\field_swiper;
+namespace Drupal\reference_swiper;
 
 use Drupal\Core\Config\Entity\ConfigEntityInterface;
 
@@ -24,7 +24,7 @@ interface SwiperOptionSetInterface extends ConfigEntityInterface {
    *   The option set's values that will be set on the entity, keyed by
    *   parameter id.
    *
-   * @return \Drupal\field_swiper\SwiperOptionSetInterface
+   * @return \Drupal\reference_swiper\SwiperOptionSetInterface
    *   The swiper option set config entity.
    */
   public function setParameters(array $values);
@@ -32,7 +32,7 @@ interface SwiperOptionSetInterface extends ConfigEntityInterface {
   /**
    * Resets the Swiper parameters on the option set to an empty array.
    *
-   * @return \Drupal\field_swiper\SwiperOptionSetInterface
+   * @return \Drupal\reference_swiper\SwiperOptionSetInterface
    *   The swiper option set config entity.
    */
   public function clearParameters();
