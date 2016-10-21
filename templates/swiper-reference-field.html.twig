@@ -42,7 +42,11 @@
   <div {{ container_attributes }}>
     <div {{ wrapper_attributes.addClass('field__items') }}>
       {% for slide_content in children %}
-          <div {{ slide_attributes.addClass('field__item') }}>
+          {% if hashnav %}
+            <div {{ slide_attributes.addClass('field__item').setAttribute('data-hash', 'slide' ~ loop.index) }}>
+          {% else %}
+            <div {{ slide_attributes.addClass('field__item') }}>
+          {% endif %}
             {{ slide_content }}
           </div>
       {% endfor %}
