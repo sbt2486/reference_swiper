@@ -1,36 +1,52 @@
-@todo Change this
-#Better entity reference formatter (berf)
+#Reference swiper
 
 ##Description
 
-The module provides an advanced field formatter for entity reference fields.
-Please follow the installation instructions and examples sections below in order
-to get started.
+This module integrates the Swiper JS library (http://idangero.us/swiper) with
+drupal's entity reference fields by providing a new formatter for entity
+reference fields.
+
+Please read the following before using this module:
+
+"Swiper - is the free and most modern mobile touch slider with hardware
+accelerated transitions and amazing native behavior. It is intended to be used
+in mobile websites, mobile web apps, and mobile native/hybrid apps. Designed
+mostly for iOS, but also works great on latest Android, Windows Phone 8 and
+modern Desktop browsers
+
+Swiper is not compatible with all platforms, it is a modern touch slider which
+is focused only on modern apps/platforms to bring the best experience and
+simplicity.".
 
 ##Benefits
 
-The default formatter for entity reference provided by Drupal core isn't very 
-flexible. It can just render all referenced entities in a certain view mode.
-This module introduces more flexible options like for example rendering only
-the first or last entity or support for even more complicated use cases.
-The module also supports the file_entity module in case you want to display 
-files or images using entity references.
+- Format anything you can reference within an entity reference field as a swiper
+  gallery, so this swiping can be applied to almost anything.
+- Swiper JS supports Swiping on mobile browsers quite well, so unlike the
+  field_slideshow module, your galleries will work on those devices as well.
+- Tons of configuration options exposed in the Swiper option set form.
+- Swiper option sets are config entities, so you can import and export them, or
+  even edit them with drush.
+- Developers may access each field's Swiper instance separately in JS.
 
-##Installation
+##Installation and configuration
 
 1. Install the module as usual using the UI or drush.
-2. Navigate to the manage display config of the content/entity type you would like to adapt, i.e. /admin/structure/types/manage/mynodetype/display .
-3. Switch the format of your entity reference field to "Advanced Rendered Entity".
-4. Configure the formatter settings as needed, see examples section.
+2. Add a Swiper option set by navigating to
+/admin/config/system/reference-swiper
+3. Navigate to the "Manage display" tab of your entity or bundle and switch the
+   formatter of your entity reference field to "Reference Swiper".
+4. Edit the formatter settings and select the option set created in step 2 by
+   entering its name in the autocomplete field
 
-##Examples
+## Known issues
 
-1. Display only the first entity: Select the selection mode "First entity". 
-2. Display only the last entity: Select the selection mode "Last entity".
-3. Display the first x entities: Select the selection mode "Advanced", enter x for amount, 0 for offset.
-4. Display the last x entities: Select the selection mode "Advanced", enter x for amount, 0 for offset and enable the reverse order option.
-5. Display two entities after the first one: Select the selection mode "Advanced", enter 2 for amount, 1 for offset.
-6. Display two entities before the last one: Select the selection mode "Advanced", enter 2 for amount, 1 for offset and enable the reverse order option.
+1. Floating a field that is using the Reference Swiper formatter with CSS will
+   break the Swiper.
+2. Swiper's parallax and lazy loading features aren't supported yet.
+
+Feel free to create an issue at the module page in case you find a bug/have a
+feature request.
 
 ##Credits:
 
