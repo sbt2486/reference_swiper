@@ -9,15 +9,21 @@
 
   'use strict';
 
+  Drupal.referenceSwiper = Drupal.referenceSwiper || {};
+
   /**
    * Register behavior that initializes Swiper instances.
+   *
+   * The created instances are stored in Drupal.referenceSwiper.swiperInstances
+   * and may be accessed by any other module's library by depending on the
+   * reference_swiper/reference_swiper.field library.
    */
   Drupal.behaviors.referenceSwiperField = {
     attach: function (context) {
-      var swiperInstances = {};
+      Drupal.referenceSwiper.swiperInstances = {};
       $('.swiper-container', context).once('reference-swiper').each(function () {
         var parameterKey = $(this).data('swiper-param-key');
-        swiperInstances[parameterKey] = new Swiper(
+        Drupal.referenceSwiper.swiperInstances[parameterKey] = new Swiper(
           $(this)[0],
           drupalSettings.referenceSwiper.parameters[parameterKey]
         );
