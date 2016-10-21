@@ -31,21 +31,30 @@ simplicity.".
 
 ##Installation and configuration
 
-1. Install the module as usual using the UI or drush.
-2. Add a Swiper option set by navigating to
-/admin/config/system/reference-swiper
-3. Navigate to the "Manage display" tab of your entity or bundle and switch the
+1. Download the Swiper library from
+https://github.com/nolimits4web/Swiper/archive/master.zip and unzip it into
+DRUPAL_ROOT/libraries/swiper such that your the swiper.jquery.min.js is
+accessible at DRUPAL_ROOT/libraries/swiper/dist/js/swiper.jquery.min.js .
+2. Install the module as usual using the UI or drush.
+3. Add a Swiper option set by navigating to
+/admin/config/system/reference-swiper .
+4. Navigate to the "Manage display" tab of your entity or bundle and switch the
    formatter of your entity reference field to "Reference Swiper".
-4. Edit the formatter settings and select the option set created in step 2 by
-   entering its name in the autocomplete field
+5. Edit the formatter settings and select the option set created in step 3 by
+   entering its name in the autocomplete field.
 
 ## Known issues
 
 1. Floating a field that is using the Reference Swiper formatter with CSS will
    break the Swiper.
-2. Swiper's parallax and lazy loading features aren't supported yet.
+2. The following Swiper features arent't supported yet:
+- parallax
+- lazy loading
+- zoom
+- other new parameters that were added in version 3.4
 
-Feel free to create an issue at the module page in case you find a bug/have a
+Feel free to create an issue at
+http://drupal.org/project/issues/reference_swiper in case you find a bug/have a
 feature request.
 
 ##Credits:
