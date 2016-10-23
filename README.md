@@ -38,7 +38,8 @@ DRUPAL_ROOT/libraries/swiper such that your the swiper.jquery.min.js is
 accessible at DRUPAL_ROOT/libraries/swiper/dist/js/swiper.jquery.min.js .
 2. Install the module as usual using the UI or drush.
 3. Add a Swiper option set by navigating to
-/admin/config/system/reference-swiper .
+/admin/config/system/reference-swiper . Refer to
+http://idangero.us/swiper/api for further information.
 4. Navigate to the "Manage display" tab of your entity or bundle and switch the
    formatter of your entity reference field to "Reference Swiper".
 5. Edit the formatter settings and select the option set created in step 3 by
