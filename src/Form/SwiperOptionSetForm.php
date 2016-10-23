@@ -147,10 +147,12 @@ class SwiperOptionSetForm extends EntityForm {
     $form['common']['nextButton'] = [
       '#type' => 'textfield',
       '#description' => $this->t('String with CSS selector of the element that will work like "next" button after click on it. <strong>Currently, only HTML id or class selectors are supported</strong>.'),
+      '#element_validate' => [[$this, 'validateSelectorString']],
     ];
     $form['common']['prevButton'] = [
       '#type' => 'textfield',
       '#description' => $this->t('String with CSS selector of the element that will work like "prev" button after click on it. <strong>Currently, only HTML id or class selectors are supported</strong>.'),
+      '#element_validate' => [[$this, 'validateSelectorString']],
     ];
     // Hash Navigation.
     $form['common']['hashnav'] = [
@@ -462,6 +464,7 @@ class SwiperOptionSetForm extends EntityForm {
     $form['swiping']['swipeHandler'] = [
       '#type' => 'textfield',
       '#description' => $this->t('String with CSS selector of the container with pagination that will work as only available handler for swiping.'),
+      '#element_validate' => [[$this, 'validateSelectorString']],
     ];
 
     // Pagination.
@@ -473,6 +476,7 @@ class SwiperOptionSetForm extends EntityForm {
     $form['pagination_wrapper']['pagination'] = [
       '#type' => 'textfield',
       '#description' => $this->t('String with CSS selector of the container with pagination. <strong>Currently, only HTML id or class selectors are supported</strong>.'),
+      '#element_validate' => [[$this, 'validateSelectorString']],
     ];
     $form['pagination_wrapper']['paginationType'] = [
       '#type' => 'select',
@@ -522,6 +526,7 @@ class SwiperOptionSetForm extends EntityForm {
     $form['scrollbar_wrapper']['scrollbar'] = [
       '#type' => 'textfield',
       '#description' => $this->t('String with CSS selector of the container with scrollbar. <strong>Currently, only HTML id or class selectors are supported</strong>.'),
+      '#element_validate' => [[$this, 'validateSelectorString']],
     ];
     $form['scrollbar_wrapper']['scrollbarHide'] = [
       '#type' => 'checkbox',
@@ -974,6 +979,35 @@ class SwiperOptionSetForm extends EntityForm {
     $entity
       ->clearParameters()
       ->setParameters($parameters);
+  }
+
+  /**
+   * Validation callback for elements used as html selector in pre-process.
+   *
+   * @param array $element
+   *   The form element to process.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   The current state of the form.
+   */
+  public function validateSelectorString(&$element, FormStateInterface $form_state) {
+    // If nothing was entered there's the option set isn't saving the value, so
+    // no need to validate anything at all.
+    $parameter_key = $element['#array_parents'][1];
+    $element_value = $form_state->getValue('parameters')[$parameter_key];
+    if (empty($element_value)) {
+      return;
+    }
+
+    $selector_start = substr($element_value, 0, 1);
+    if (!in_array($selector_start, ['.', '#'])) {
+      $form_state->setError(
+        $element,
+        t(
+          '@parameter: Please enter a valid HTML id or class selector.',
+          ['@parameter' => $parameter_key]
+        )
+      );
+    }
   }
 
   /**
