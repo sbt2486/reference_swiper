@@ -40,6 +40,7 @@ function reference_swiper_field_formatter_info_alter(array &$info) {
  */
 function template_preprocess_swiper_reference_field(&$variables) {
   $element = $variables['element'];
+  $parameters = $element['#swiper_parameters'];
 
   // Copy some values into variables for easier access in template.
   $delta = 0;
@@ -48,17 +49,19 @@ function template_preprocess_swiper_reference_field(&$variables) {
     $delta++;
   }
   $variables['label_hidden'] = isset($element['#children']['#label_display']) && $element['#children']['#label_display'] == 'hidden';
-  $variables['hashnav'] = isset($element['#swiper_parameters']['hashnav']) ? TRUE : FALSE;
+  $variables['hashnav'] = isset($parameters['hashnav']) ? TRUE : FALSE;
 
   // Prepare attributes.
   $variables['attributes'] = new Attribute();
   $variables['title_attributes'] = new Attribute();
   $variables['container_attributes'] = new Attribute($element['#attributes']);
-  $variables['wrapper_attributes'] = new Attribute(['class' => $element['#swiper_parameters']['wrapperClass']]);
-  $variables['slide_attributes'] = new Attribute(['class' => $element['#swiper_parameters']['slideClass']]);
+  // These values are taken from the swiper option set form, but Attribute
+  // escapes the values automatically using Html::escape, thus no need to escape
+  // any values here.
+  $variables['wrapper_attributes'] = new Attribute(['class' => $parameters['wrapperClass']]);
+  $variables['slide_attributes'] = new Attribute(['class' => $parameters['slideClass']]);
 
   // Check for controls and add them to variables array if necessary.
-  $parameters = $element['#swiper_parameters'];
   $controls = [
     'pagination' => 'pagination',
     'next_button' => 'nextButton',
