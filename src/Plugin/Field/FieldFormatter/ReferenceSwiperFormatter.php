@@ -27,7 +27,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   }
  * )
  */
-class SwiperFormatter extends EntityReferenceEntityFormatter implements ContainerFactoryPluginInterface {
+class ReferenceSwiperFormatter extends EntityReferenceEntityFormatter implements ContainerFactoryPluginInterface {
 
   /**
    * The url generator service.
@@ -56,7 +56,7 @@ class SwiperFormatter extends EntityReferenceEntityFormatter implements Containe
   }
 
   /**
-   * Constructs a new SwiperFormatter.
+   * Constructs a new ReferenceSwiperFormatter.
    *
    * @param string $plugin_id
    *   The plugin_id for the formatter.
