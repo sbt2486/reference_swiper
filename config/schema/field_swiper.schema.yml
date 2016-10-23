@@ -94,9 +94,9 @@ reference_swiper.swiper_option_set.*:
         flip:
           type: string
           label: 'flip'
-        parallax:
-          type: boolean
-          label: 'parallax'
+#        parallax:
+#          type: boolean
+#          label: 'parallax'
         spaceBetween:
           type: integer
           label: 'spaceBetween'
@@ -289,18 +289,18 @@ reference_swiper.swiper_option_set.*:
         updateOnImagesReady:
           type: boolean
           label: 'updateOnImagesReady'
-        lazyLoading:
-          type: boolean
-          label: 'lazyLoading'
-        lazyLoadingInPrevNext:
-          type: boolean
-          label: 'lazyLoadingInPrevNext'
-        lazyLoadingInPrevNextAmount:
-          type: integer
-          label: 'lazyLoadingInPrevNextAmount'
-        lazyLoadingOnTransitionStart:
-          type: boolean
-          label: 'lazyLoadingOnTransitionStart'
+#        lazyLoading:
+#          type: boolean
+#          label: 'lazyLoading'
+#        lazyLoadingInPrevNext:
+#          type: boolean
+#          label: 'lazyLoadingInPrevNext'
+#        lazyLoadingInPrevNextAmount:
+#          type: integer
+#          label: 'lazyLoadingInPrevNextAmount'
+#        lazyLoadingOnTransitionStart:
+#          type: boolean
+#          label: 'lazyLoadingOnTransitionStart'
         loop:
           type: boolean
           label: 'loop'
@@ -412,12 +412,12 @@ reference_swiper.swiper_option_set.*:
         onAutoplayStop:
           type: string
           label: 'onAutoplayStop(swiper)'
-        onLazyImageLoad:
-          type: string
-          label: 'onLazyImageLoad(swiper, slide, image)'
-        onLazyImageReady:
-          type: string
-          label: 'onLazyImageReady(swiper, slide, image)'
+#        onLazyImageLoad:
+#          type: string
+#          label: 'onLazyImageLoad(swiper, slide, image)'
+#        onLazyImageReady:
+#          type: string
+#          label: 'onLazyImageReady(swiper, slide, image)'
         onPaginationRendered:
           type: string
           label: 'onPaginationRendered(swiper, paginationContainer)'

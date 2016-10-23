@@ -135,10 +135,10 @@ class SwiperOptionSetForm extends EntityForm {
       '#type' => 'checkbox',
       '#description' => $this->t('Set to true on nested Swiper for correct touch events interception. Use only on nested swipers that use same direction as the parent one.'),
     ];
-    $form['common']['parallax'] = [
-      '#type' => 'checkbox',
-      '#description' => $this->t('Enable, if you want to use "parallaxed" elements inside of slider.'),
-    ];
+//    $form['common']['parallax'] = [
+//      '#type' => 'checkbox',
+//      '#description' => $this->t('Enable, if you want to use "parallaxed" elements inside of slider.'),
+//    ];
     $form['common']['grabCursor'] = [
       '#type' => 'checkbox',
       '#description' => $this->t('This option may a little improve desktop usability. If true, user will see the "grab" cursor when hover on Swiper.'),
@@ -619,24 +619,24 @@ class SwiperOptionSetForm extends EntityForm {
       '#type' => 'checkbox',
       '#description' => $this->t('When enabled Swiper will be reinitialized after all inner images (<img> tags) are loaded. Required preloadImages: true.'),
     ];
-    $form['images']['lazyLoading'] = [
-      '#type' => 'checkbox',
-      '#description' => $this->t('Set to "true" to enable images lazy loading. Note that preloadImages should be disabled.'),
-    ];
-    $form['images']['lazyLoadingInPrevNext'] = [
-      '#type' => 'checkbox',
-      '#description' => $this->t('Set to "true" to enable lazy loading for the closest slides images (for previous and next slide images).'),
-    ];
-    $form['images']['lazyLoadingInPrevNextAmount'] = [
-      '#type' => 'number',
-      '#min' => !empty($swiper_option_set->getParameters()['slidesPerView']) ? $swiper_option_set->getParameters()['slidesPerView'] : 1,
-      '#step' => 1,
-      '#description' => $this->t("Amount of next/prev slides to preload lazy images in. Can't be less than slidesPerView."),
-    ];
-    $form['images']['lazyLoadingOnTransitionStart'] = [
-      '#type' => 'checkbox',
-      '#description' => $this->t('By default, Swiper will load lazy images after transition to this slide, so you may enable this parameter if you need it to start loading of new image in the beginning of transition.'),
-    ];
+//    $form['images']['lazyLoading'] = [
+//      '#type' => 'checkbox',
+//      '#description' => $this->t('Set to "true" to enable images lazy loading. Note that preloadImages should be disabled.'),
+//    ];
+//    $form['images']['lazyLoadingInPrevNext'] = [
+//      '#type' => 'checkbox',
+//      '#description' => $this->t('Set to "true" to enable lazy loading for the closest slides images (for previous and next slide images).'),
+//    ];
+//    $form['images']['lazyLoadingInPrevNextAmount'] = [
+//      '#type' => 'number',
+//      '#min' => !empty($swiper_option_set->getParameters()['slidesPerView']) ? $swiper_option_set->getParameters()['slidesPerView'] : 1,
+//      '#step' => 1,
+//      '#description' => $this->t("Amount of next/prev slides to preload lazy images in. Can't be less than slidesPerView."),
+//    ];
+//    $form['images']['lazyLoadingOnTransitionStart'] = [
+//      '#type' => 'checkbox',
+//      '#description' => $this->t('By default, Swiper will load lazy images after transition to this slide, so you may enable this parameter if you need it to start loading of new image in the beginning of transition.'),
+//    ];
 
     $form['loop_control_observer'] = [
       '#type' => 'details',
@@ -803,14 +803,14 @@ class SwiperOptionSetForm extends EntityForm {
       '#type' => 'textarea',
       '#description' => $this->t('Callback function with arguments, swiper, will be executed when when autoplay stopped'),
     ];
-    $form['callbacks']['onLazyImageLoad'] = [
-      '#type' => 'textarea',
-      '#description' => $this->t('Callback function with arguments, swiper, slide, image, will be executed in the beginning of lazy loading of image'),
-    ];
-    $form['callbacks']['onLazyImageReady'] = [
-      '#type' => 'textarea',
-      '#description' => $this->t('Callback function with arguments, swiper, slide, image, will be executed when lazy loading image will be loaded'),
-    ];
+//    $form['callbacks']['onLazyImageLoad'] = [
+//      '#type' => 'textarea',
+//      '#description' => $this->t('Callback function with arguments, swiper, slide, image, will be executed in the beginning of lazy loading of image'),
+//    ];
+//    $form['callbacks']['onLazyImageReady'] = [
+//      '#type' => 'textarea',
+//      '#description' => $this->t('Callback function with arguments, swiper, slide, image, will be executed when lazy loading image will be loaded'),
+//    ];
     $form['callbacks']['onPaginationRendered'] = [
       '#type' => 'textarea',
       '#description' => $this->t('Callback function, will be executed after pagination elements generated and added to DOM.'),
@@ -1046,7 +1046,7 @@ class SwiperOptionSetForm extends EntityForm {
         'autoHeight' => FALSE,
         'roundLengths' => FALSE,
         'nested' => FALSE,
-        'parallax' => FALSE,
+//        'parallax' => FALSE,
         'grabCursor' => FALSE,
         'nextButton' => '',
         'prevButton' => '',
@@ -1168,10 +1168,10 @@ class SwiperOptionSetForm extends EntityForm {
       'images' => [
         'preloadImages' => TRUE,
         'updateOnImagesReady' => TRUE,
-        'lazyLoading' => FALSE,
-        'lazyLoadingInPrevNext' => FALSE,
-        'lazyLoadingInPrevNextAmount' => 1,
-        'lazyLoadingOnTransitionStart' => FALSE,
+//        'lazyLoading' => FALSE,
+//        'lazyLoadingInPrevNext' => FALSE,
+//        'lazyLoadingInPrevNextAmount' => 1,
+//        'lazyLoadingOnTransitionStart' => FALSE,
       ],
       'loop_control_observer' => [
         // Loop.
@@ -1216,8 +1216,8 @@ class SwiperOptionSetForm extends EntityForm {
         'onAutoplay' => '',
         'onAutoplayStart' => '',
         'onAutoplayStop' => '',
-        'onLazyImageLoad' => '',
-        'onLazyImageReady' => '',
+//        'onLazyImageLoad' => '',
+//        'onLazyImageReady' => '',
         'onPaginationRendered' => '',
       ],
       // Namespace.
