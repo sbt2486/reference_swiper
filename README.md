@@ -21,12 +21,13 @@ simplicity.".
 
 ##Features
 
-- Format anything you can reference within an entity reference field as a swiper
-  gallery, so this swiping can be applied to almost anything.
-- Swiper JS supports Swiping on mobile browsers quite well, so unlike the
-  field_slideshow module, your galleries will work on those devices as well.
-- Tons of configuration options exposed in the Swiper option set form.
-- Swiper option sets are config entities, so you can import and export them, or
+- Format any multivalue (content) entity reference field as a Swiper slider, for
+  example, use file or media entities to create image sliders, or just apply it
+  to multiple node references to slide through them.
+- Swiper JS supports sliders on touch devices.
+- Make use of the many configuration options available in Swiper's API, by just
+  simply creating a Swiper option set on the provided admin UI.
+- Swiper option sets are config entities, so you may import and export them, or
   even edit them with drush.
 - Developers may access each field's Swiper instance separately in JS.
 
