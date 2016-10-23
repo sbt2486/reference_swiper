@@ -6,7 +6,8 @@ This module integrates the Swiper JS library (http://idangero.us/swiper) with
 drupal's entity reference fields by providing a new formatter for entity
 reference fields.
 
-Please read the following before using this module:
+Please read the following description of the Swiper library before using this
+module:
 
 "Swiper - is the free and most modern mobile touch slider with hardware
 accelerated transitions and amazing native behavior. It is intended to be used
@@ -18,7 +19,7 @@ Swiper is not compatible with all platforms, it is a modern touch slider which
 is focused only on modern apps/platforms to bring the best experience and
 simplicity.".
 
-##Benefits
+##Features
 
 - Format anything you can reference within an entity reference field as a swiper
   gallery, so this swiping can be applied to almost anything.
