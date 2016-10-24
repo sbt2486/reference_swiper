@@ -36,7 +36,7 @@
   ]
 %}
 <div{{ attributes.addClass(classes) }}>
-  {% if not element['#children']['#label_hidden'] %}
+  {% if not label_hidden %}
     <div{{ title_attributes.addClass(title_classes) }}>{{ element['#children']['#title'] }}</div>
   {% endif %}
   <div {{ container_attributes }}>
