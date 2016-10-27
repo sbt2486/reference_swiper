@@ -20,7 +20,7 @@
    */
   Drupal.behaviors.referenceSwiperField = {
     attach: function (context) {
-      Drupal.referenceSwiper.swiperInstances = {};
+      Drupal.referenceSwiper.swiperInstances = Drupal.referenceSwiper.swiperInstances || {};
       $('.swiper-container', context).once('reference-swiper').each(function () {
         var parameterKey = $(this).data('swiper-param-key');
         Drupal.referenceSwiper.swiperInstances[parameterKey] = new Swiper(
