@@ -162,7 +162,7 @@ class SwiperOptionSetForm extends EntityForm {
     // Breakpoints.
     $form['common']['breakpoints'] = [
       '#type' => 'textarea',
-      '#description' => $this->t("Allows to set different parameter for different responsive breakpoints (screen sizes). Not all parameters can be changed in breakpoints, only those which are not required different layout and logic, like slidesPerView, slidesPerGroup, spaceBetween. Such parameters like slidesPerColumn, loop, direction, effect won't work."),
+      '#description' => $this->t("Allows to set different parameter for different responsive breakpoints (screen sizes). Not all parameters can be changed in breakpoints, only those which are not required different layout and logic, like slidesPerView, slidesPerGroup, spaceBetween. Such parameters like slidesPerColumn, loop, direction, effect won't work. <strong>The value has to be in JSON format, for example: {\"768\":{\"slidesPerView\":1},\"940\":{\"slidesPerView\":2}}</strong>"),
     ];
 
     // Autoplay.
@@ -260,19 +260,19 @@ class SwiperOptionSetForm extends EntityForm {
     ];
     $form['effect_wrapper']['fade'] = [
       '#type' => 'textarea',
-      '#description' => $this->t('Fade effect parameters.'),
+      '#description' => $this->t('Fade effect parameters. <strong>The value has to be in JSON format</strong>.'),
     ];
     $form['effect_wrapper']['cube'] = [
       '#type' => 'textarea',
-      '#description' => $this->t('Cube effect parameters. For better performance you may disable shadows.'),
+      '#description' => $this->t('Cube effect parameters. For better performance you may disable shadows. <strong>The value has to be in JSON format</strong>.'),
     ];
     $form['effect_wrapper']['coverflow'] = [
       '#type' => 'textarea',
-      '#description' => $this->t('Coverflow effect parameters. For better performance you may disable shadows.'),
+      '#description' => $this->t('Coverflow effect parameters. For better performance you may disable shadows. <strong>The value has to be in JSON format</strong>.'),
     ];
     $form['effect_wrapper']['flip'] = [
       '#type' => 'textarea',
-      '#description' => $this->t('Flip effect parameters. limitRotation (when enabled) limits slides rotation angle to 180deg maximum. It allows to quickly "flip" between different slides. If you use "slow" transitions then it is better to disable it.'),
+      '#description' => $this->t('Flip effect parameters. limitRotation (when enabled) limits slides rotation angle to 180deg maximum. It allows to quickly "flip" between different slides. If you use "slow" transitions then it is better to disable it. <strong>The value has to be in JSON format</strong>.'),
     ];
 
     // Slides grid.
@@ -500,6 +500,9 @@ class SwiperOptionSetForm extends EntityForm {
       '#type' => 'textfield',
       '#description' => $this->t('Defines which HTML tag will be use to represent single pagination bullet. . Only for bullets pagination type.'),
     ];
+    $form['pagination_wrapper']['info'] = [
+      '#markup' => t('<strong>Do not include function headers in the textfields below. Just enter the corresponding statements (the function body), which shall be executed by the render function.</strong>'),
+    ];
     $form['pagination_wrapper']['paginationBulletRender'] = [
       '#type' => 'textarea',
       '#description' => $this->t('This parameter allows totally customize pagination bullets, you need to pass here a function that accepts index number of pagination bullet and required element class name (className). Only for bullets pagination type.'),
@@ -695,9 +698,12 @@ class SwiperOptionSetForm extends EntityForm {
       '#type' => 'checkbox',
       '#description' => $this->t('Run on[Transition/SlideChange][Start/End] callbacks on swiper initialization. Such callbacks will be fired on initialization in case of your initialSlide is not 0, or you use loop mode.'),
     ];
+    $form['callbacks']['info'] = [
+      '#markup' => t('<strong>Do not include function headers in the textfields for the callbacks below. Just enter the corresponding statements (the function body), which shall be executed by the callback.</strong>'),
+    ];
     $form['callbacks']['onInit'] = [
       '#type' => 'textarea',
-      '#description' => $this->t('Callback function with arguments, swiper, will be executed right after Swiper initialization'),
+      '#description' => $this->t('Callback function with arguments, swiper, will be executed right after Swiper initialization.'),
     ];
     $form['callbacks']['onSlideChangeStart'] = [
       '#type' => 'textarea',
